@@ -1,0 +1,56 @@
+body{
+ color: #fff;
+ padding-top:75px;
+ font-size: fluid;
+}
+.jumbotron{
+  background-color: rgba(149, 117, 205,25%);
+  border-radius: 10px;
+}
+.footer{
+  padding-top: 3%;
+  padding-bottom:5%;
+  border-top: 1px dashed yellow;
+  background-color:rgba(149, 117, 205,25%);
+}
+.navbar{
+  background-color: rgba(5,24,45,80%);
+  padding-top: 1%;
+  padding-bottom:1%;
+  border-bottom:solid 2px chartreuse;
+}
+.card{
+  background-color: transparent;
+}
+.card-title, .card-text{
+  text-align: center;
+}
+.btn{
+  margin-right:6%;
+  margin-bottom:3%;
+}
+.foot{
+  border: 2px solid;
+  border-radius: 15px;
+  border-color: chartreuse;
+  margin: 2%;
+  padding:5%;
+}
+.contain{
+  padding:5%;
+}
+.img{
+  border-radius: 7px;
+}
+.card{
+  border:1px dotted #24c4c9;
+}
+.nav-item{
+  background:#045fb4;
+  padding-left:10px;
+  border-top-left-radius:5px;
+  border-bottom-left-radius:5px;
+  margin-right:3px;
+  min-width:70px;
+  text-align:justify;
+}

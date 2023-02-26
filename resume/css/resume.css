@@ -1,0 +1,16 @@
+.row{
+  margin:3%;
+}
+.table{
+  color:#fff;
+}
+.table-hover tbody tr:hover,
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th{
+  color:chartreuse;
+}
+.dec{
+  padding:2rem 7rem 2rem 7rem;
+  border-radius: 10px;
+  background: rgba(76, 175, 80, 0.6);
+}
