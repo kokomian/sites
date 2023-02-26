@@ -1,0 +1,240 @@
+/////////////////////////////////////////////////////////////////////SQL
+COMPONENTS OF SQL
+
+1. Data Definition Language - Create, Alter, Truncate, Drop
+2. Data Manipulation Language - Insert, Delete, Update, Select
+3. Transaction Control Language - Commit, Rollback
+4. Data Control Language - Grant, Revoke
+
+/*-------------DDL----create--alter--truncate--drop--------*/
+DataTypes:
+	varchar2(size) -variable length data string
+	char(size) -fixed length data string
+	number(p) -number with maximum of p digits
+	number(p,s) -number with 8 digits out of which s digits are decimal point
+	date  (ex. '17-Oct-20') syntax 'DD-Mon-YY'
+Constraints:
+	Primary key (must be unique and notnull)
+	Foreign key (to enable a link between parent & child tables)
+	Unique (no duplicates allowed, but null values allowed)
+	Not null (attribute should have a value)
+	Check (conditions on values being assigned)
+	
+Create:
+	CREATE TABLE <tablename>(colName1 datatype, colName2 datatype, ...., colNameN datatype);
+Alter:
+	ALTER TABLE <tablename> ADD Foreign key(<colName>) REFERENCES <ParentTable>(<colName>);
+Truncate:
+	Removes all rows from table
+Drop:
+	removes entire table structure
+
+/*-------------DML----insert--delete--update--select--------*/
+
+Insert:
+	INSERT INTO <tablename>[(col1, col2, col3, ...)] VALUES(val1, val2,val3, ....);
+	INSERT INTO Customer VALUES(1, "Honey", 9291319487, "a@a.com");
+	******Data of DATE, VARCHAR, CHAR should be enclosed in single quotes('')
+Update:
+	UPDATE <tablename> SET [colName=value, colName2= value2,..] [WHERE condition];
+	UPDATE Customer SET emailId= 'ashok@gmail.com' WHERE cName='Ashok';
+	UPDATE Customer SET emailId='ashok@gmail.com'; //all rows gets effected
+Delete:
+	DELETE FROM <tablename> [WHERE condition];
+	DELETE FROM Customer WHERE cId=2;
+	DELETE FROM Customer; //all rows will be deleted
+	******when a column is referencened by a child table, delete statement will raise error
+	to avoid this use Reference options
+	1. Cascade: automatically deletes matching rows in child table
+	2. Set Null: sets foriegn key column in child table to NULL
+	3. Restrict: default one- restricts the delete operation
+	REFERENCES <tablename> (index_col_name,...) [ON DELETE <referenceOption>]
+	*******
+	-> DELETE statement can be reverted
+	but truncate permanantly deletes data
+Merge:
+	MERGE INTO <tablename> <tablealias> USING (table|view|subQuery) alias ON(join condition)
+	WHEN MATCHED THEN
+		UPDATE SET
+			col1= val1,
+			col2= val2
+	WHEN NOT MATCHED THEN
+		INSERT (columnList) VALUES (valuesList);
+
+*SELECT:
+	used to retrieve data from one or more tables or views
+	the result is stored in a temporary table called result-set
+	syntax:
+	SELECT [distinct] [col1, col2, ...] | * FROM <tablename> [alias] [, <tablename> [alias] ,...]
+	[WHERE conditions]
+	[GROUP BY group [having_group_conditions]]
+	[ORDER BY sort_columns[ASC|DESC]]
+	
+	ex:	SELECT * FROM Customer; -> retrieves all records & attributes from Customer table
+		SELECT cName, address FROM Customer; -> retrieves all records with only name& address attributes
+		SELECT col1, (arithmetic expression) <aliasNameForNewColumn> FROM <tablename>
+			SELECT cId, (salary*months) totalSalary FROM Employee;
+
+		****Concatenation operator || *****
+		SELECT cname || ' lives in ' || address as CustomerAddr FROM Customer;
+
+		****Like operator****
+		/*code*/ FROM Customer WHERE emailId LIKE '%yahoo%';        //% means unknown number of letters
+										     LIKE '_____@gmail.com';   //_ means one letters
+		
+		****Between operator***
+		WHERE salary BETWEEN 5000 and 8000; (5000,8000 are inclusive)
+		
+		****IN operator****
+		WHERE salary IN (5000,6000,7000);  //looks for match in a set of values
+		
+		****IS NULL****
+		WHERE salary IS NULL;
+		
+		****Logical operators****
+		AND, OR, NOT
+		
+		****ORDER BY clause****
+		SELECT cname FROM Customer ORDER BY cname; //ascending order
+		SELECT cname FROM Customer ORDER BY cname desc; //descending order
+		
+		****DISTINCT****
+		selects only unique records
+		
+/*-------------TCL--------commit--rollback--------*/
+a transaction begins when DML statements are executed
+after executing DML statement we manually commit those transactions to made the permenant change
+DDL statements are auto-committed
+a transaction should end with rollback/commit
+and a SavePoint acts as a recovery point
+	COMMIT - ends current transaction and make changes to the data permanant
+	ROLLBACK - ends current transaction and discards all pending changes to the data
+	SAVEPOINT <saveptName> - make a savepoint in the current transaction
+	ROLLBACK <saveptName> - rollsback to the savept by discarding any changes & savepoints created after the saveptName
+
+FUNCTIONS - SCALAR & AGGREGATE
+	a block of code that may take arguments & always returns a value
+	functions- built-in/sql function
+				-> single row function
+				-> multiple row function
+			 - user defined function
+
+-> CHARACTER FUNCTION
+	1. Lower (column|exp)
+	2. Upper (column|exp)
+	3. InitCap (column|exp) - converts first letter of each word to uppercase, remaining to lowercase
+	4. Concat (col1|exp1 , col2|exp2)
+	5. Substr ( col|exp, m, [n]) - sub string starting from position (not index) m with length n
+	6. Length (col|exp)
+	
+	ex. SELECT Lower(cName) FROM Customer;
+
+-> NUMBER FUNCTION
+	1. Abs (col|exp) :: absolute value
+	2. Ceil (col|exp) :: smallest int >= the given number
+	3. Floor (col|exp) :: largest int <= the given number
+	4. Mod (m,n) :: reminder
+	5. Round ( n[,m]) :: retuns n rounded to m decimals
+	6. Trunc ( n[,m]) :: retuns n truncates to m decimals
+	ex. SELECT ABS(-5) FROM DUAL
+	
+	***********DUAL is a Dummy Table with a varchar datatype column********
+	
+-> DATE FUNCTION
+	SELECT SYSDATE from Dual;
+	this query gives current system date
+	1. Months_between(sysdate, <date>) 
+	2. Add_months(sysdate, <noofmonths>)
+	3. Next_date(sysdate, <day>) --day= monday, tuesday...
+	4. Last_day(sysdate)  -- last day of month
+	5. Round()
+	6. Trunc()
+	
+-> CONVERSION FUNCTION
+	1. To_char(number | date | , [fmt])
+	2. To_date(char, [fmt])
+	3. To_number(char, [fmt])
+	
+-> Data Format model
+	Year like 2001, YYYY, YY
+	MM, MONTH (full name), MON (abbreviated)
+	WW (week of year), W (week of month)
+	DAY(full name of week), D (day of week), DD (day of month), DDD (day of year)
+	HH (0-12), HH24(0-23) hours
+	MI (minute)
+	SS (seconds)
+	
+	ex. SELECT To_char( SYSDATE, 'dd month yyyy') from Dual;
+		SELECT To_number( '234.67', 999.99) FROM Dual;		ans:234.67
+		SELECT To_date( 'may-12-2019', 'mon-dd-yyyy') from Dual;  ans:12-MAY-19
+		
+-> CONDITIONAL EXPRESSIONS - (Case & Decode)
+	1. Case is like switch statement
+		SELECT pid, name
+		CASE pname
+		WHEN 'Money Back Plan' THEN 'Money Savings'
+		WHEN 'Personal Protect' THEN 'Life Insurance'
+		ELSE 'Normal Policy'
+		END "Category of Policies" FROM policy;
+	2. Decode statement only exists in Oracle DB, it is like if statement
+		SELECT pid, pname, DECODE(pname, 'Money Back Plan', 'Money saving', 'Personal protect', 'Life insurance', 'Normal policy') "Category of Policies" FROM Policy;
+	
+-> GENERAL FUNCTION
+	NVL(ex1, ex2) - returns ex2 if ex1==NULL else return ex1
+	NVL2(ex1, ex2, ex3) - if ex1!=NULL then return ex2, if ex1==NULL then return ex3
+	NULLIF - compares two expressions returns- null if equal, 1st expression if they are not equal
+	COALESCE - returns 1st not null expression in the list
+		
+AGGREGATE / GROUP FUNCTIONS
+- they operate on a set of rows & gives a single result for the set the rows
+- unlike single row functions, group functions can be nested only upto depth of 2
+- ex. MAX, MIN, SUM, AVG, COUNT
+- group functions ignores NULL values
+
+GROUP BY CLAUSE
+- divides the rows into groups
+- ex. SELECT cId, MAX(penalty) as maximum FROM policyEnrollment GROUP BY cId;
+
+HAVING CLAUSE
+- WHERE cannot be used 	where group functions
+- so HAVING clause is used to specify conditions for groups
+- ex. SELECT cId, sum(amount) as maximum FROM policyenrollment GROUP BY cId HAVING sum(amount)>2000;
+
+
+///////////////JOINS & SUBQUERY
+JOIN - joins two or more tables on a condition
+		if condition is omitted, results in table with n*n rows 
+		i.e., formed a cartesian join (with rows having the cartesian product)
+		
+ex. SELECT c.cId, cName, enrollmentID, p.cId, pid, FROM Customer c, PolicyEnrollment p Order By c.cId, enrollmentID  (this forms cartesian product)
+	SELECT c.cId, cName, enrollmentID, p.cId, pid, FROM Customer c, PolicyEnrollment p WHERE cId=pid Order By c.cId (here condition is provided by WHERE clause)
+	
+JOIN syntax:
+	SELECT t1.column, t2.column
+	FROM t1, t2
+	WHERE t1.column1= t2.column2;
+	
+	SELECT t1.column, t2.column
+	FROM t1 JOIN t2 ON t1.column1= t2.column2;
+	
+JOIN Types: equi, non-equi, outer, self joins
+equi	 : two tables joined using = in join condition
+non-equi : using other than = operator
+outer join: left outer join- returns all rows from left table with matching rows of right table
+		SELECT t1.col, t2.col
+		FROM t1 LEFT OUTER JOIN t2 
+		ON t1.col1=t2.col2;
+			right outer join- returns all rows from right table with matching rows of left table
+			full outer join-  returns all rows from both tables, when there is no match NULL will be placed accordingliy
+			**NULL is placed when there is no match
+self	 :
+natural	 : joined using common columns of the two tables, the two columns must have same datatype
+
+SUBQUERY: 
+	SELECT <column-list>
+	FROM <table>
+	WHERE columnname operator (SELECT columnlist FROM table);
+subquery types: single row - inner SELECT returns only one row
+							operators used: =, <>(not euqals), >, <, >=, <=
+				multi row - inner SELECT returns multiple rows
+							operators used: in, all, any

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/master.css">
+    <title>Adv c#</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="./index.html">C#</a></li>
+            <li><a href="#">Advanced C#</a></li>
+            <li><a href="./sql.html">SQL server</a></li>
+            <li><a href="./adonetLinq.html">ADO.NET & LINQ</a></li>
+        </ul>
+    </nav>
+    <h1>Collections (System.Collections)</h1>
+    <li>group of ordered set of items those can be referred to as single unit</li>
+    <li>features: ordered(stack, queue), sorted(sortedlist), indexed(arraylist), unique(set)</li>
+    <ol>
+        <li>array list-----------IList </li>
+        <li>string collection----IList</li>
+        <li>stack------ICollection</li>
+        <li>queue------ICollection</li>
+        <li>bitarray---ICollection</li>
+        <li>hash map/hash table---IDictionary</li>
+        <li>sortedlist------------IDictionary</li>
+    </ol>
+    collection hierarchy:
+    <ol>
+        <li>list : access elements by index (IList)</li>
+        <li>map : stores elements in (k,v) pairs (IDictionary)</li>
+        <li>custom collections</li>
+    </ol>
+    <code>ArrayList mylst = new ArrayList(--optional argument n--);</code> <br>
+    <li>methods- Add, Remove, RemoveAt, RemoveRange, Reverse, Insert, IndexOf</li>
+    <li>properties- Count, Capacity (n^x, default value of n is 2), </li> <br>
+    <code>StringCollection mySColl = new StringCollection(); <span>//using System.Collections.Specialized</span></code> <br>
+    <br>
+    <h2>IEnumerable (System.Collections)</h2>
+    <ul>
+        <li>interface that provides iteration over a collection</li>
+        <li>GetEnumerator() returns a ref to IEnumerator</li>
+        <li>
+            <code>IEnumerator itr = ( (IEnumerable)myCollection ).GetEnumerator()</code> <br>
+            itr.MoveNext() , itr.Current
+        </li> 
+    </ul>
+    <h2>Maps</h2>
+    <ul>
+        <li>stores data in (k,v) pairs</li>
+        <li>
+            <code>SortedList mylst = new SortedList(); //ascending order based on key</code> <br>
+            <code>Hashtable myhst= new Hashtable(); //ordered based on hash of the key(non-deterministic order)</code>
+        </li>
+        <li>GetKey(), GetByIndex()</li>
+        <li>IDictionaryEnumerator interface is used to iterate over a hashmap</li>
+        <li>DictionaryEntry type can also be used in foreach loop for Hashtable</li>
+    </ul>
+    <h2>Stack & Queue</h2>
+    <h1>Custom Collections</h1>
+    <ol>
+        <li>Extending from "CollectionBase"</li>
+        <li>Extending from "ReadOnlyCollectionBase" - parent members are protected</li>
+    </ol>
+    <h2>collections limitations</h2>
+    <ol>
+        <li>boxing & unboxing of items</li>
+        <li>no compile time checking</li>
+        <li>casting</li>
+    </ol>
+    <hr>
+    <h1>Generics (System.Collections.Generic)</h1>
+    <ul>
+        <li>type-safe code at compile time</li>
+        <li>generic class <br>
+            <code>
+                class MyGenericClass &#60T&#62{ <br>
+                    void Add(T data){} <br>
+                } <br>
+                MyGenericClass&#60int&#62 obj1= new MyGenericClass&#60int&#62(); <br>
+                MyGenericClass&#60string&#62 obj2= new MyGenericClass&#60string&#62();
+            </code>
+        </li>
+        <li>generic method <br>
+            <code>
+                public void GenericMthd &#60T&#62 (T var1, T var 2){ <br>
+                }
+            </code>
+        </li>
+    </ul>
+    <hr>
+    <h1>Delegates (System.Delegate)</h1>
+    <ul>
+        <li>stores addr of 1/more methods with the same signature as delegate</li>
+        <li>method access level should be accesible by the delegate i.e, private delegate can refer to public methods</li>
+        <li>i.e, delegate runs under caller(method) security &not under declarer(delegate) security</li>
+        <li>delegates can be declared 
+            <ol>
+                <li>inside a class as a member variable</li>
+                <li>inside a namespace</li>
+                <li>outside of all classes & namespaces</li>
+            </ol>
+        </li>
+        <li>declaration <br>
+            <code><i>access</i> delegate <i>return_type</i> <i>delegate_name</i>( <i>parameter list</i>); </code> <br>
+            <code>public delegate int AddDlgt(int n, int m);</code>
+        </li>
+        <li>instantiation <br>
+            <code><i>delegate_name</i> varName = new <i>delegate_name</i>(function_name)</code> <br>
+            <code>AddDlgt dlgtVar = new AddDlgt( MyClass.AddNums)</code>
+        </li>
+        <li><span>delegate inference</span> <br>
+            <code>AddDlgt dlgtVar = MyClass.AddNums</code> <br>
+            <p>directly assigning the method name instead of wrapping it in delegate object</p>
+        </li>
+    </ul>
+    <h2>Delegate types</h2>
+    <ol>
+        <li>Single cast</li>
+        <li>multi cast -methods are invoked in orderly manner(for event based scenarios)</li>
+    </ol>
+    <h2>Delegate modes</h2>
+    <ul>
+        <li>synchronous - </li>
+        <li>asynchronous - calling delegates using BeginInvoke() & EndInvoke()</li>
+        <li>after calling BeginInvoke() the control goes to delegate method asynchronously</li>
+        <li>IAsyncResult has members- AsyncState, AsyncWaitHandle, IsCompleted</li>
+    </ul>
+    <h2>Covariance (flexibility in return type)</h2>
+    <li>allows the original method to have derived type of the delegate return type</li>
+    <code>
+        shape &#60- Rectangle <br>
+        shape &#60- Circle <br> <br>
+        public delegate Shape MyDlgt(); <br>
+        public Rectangle MyMethod(){  } <br>
+        MyDlgt obj= MyMethod;
+    </code>
+    <h2>Contravariance (flexibility in parameters)</h2>
+    <li>original method can have parameters with Parent type of return type of delegate parameter type</li>
+    <li>like one of delegate argument is of type Rectangle <br>then original method can have Shape as it's parameter type</li>
+    <h2>Anonymous methods using delegates</h2>
+    <ul>
+        <li>
+            <code>
+                public delegate void MyDelegate(int n); <br>
+                ...... <br>
+                MyDelegate obj = delegate( int n){ <br>
+                    ///body; <br>
+                    ///body; <br>
+                };
+            </code>
+        </li>
+       <li>this Anonymous function canbe used anywhere </li> 
+    </ul>
+    <hr>
+    <h1>XML</h1>
+    <ul>
+        <li>contains structured data encapsulated in user-defined tags</li>
+        <li>tree structure with root, child nodes</li>
+        <li>xml declaration <br>
+            <code>&#60?xml version="1.0" encoding="UTF-8" standalone="no" ?&#62</code>
+        </li>
+        <li><code>&#60myElement&#62 data inside myelement &#60/myElement&#62</code></li>
+        <li>attribute provide additional info about the element they belong to</li>
+        <li><code>&#60myElement id="1001"&#62
+            Ashok
+            &#60/myElement&#62</code></li>
+        <li>opening & closing tags should match (case-sensitive)</li>
+        <li>Webservices SOAP, WSDL, UDDI are based on XML</li>
+    </ul>
+    <h2>validating XML</h2>
+    <ul>
+        <li>Document Type Definition</li>
+        <li>XML Schema Definition</li>
+        <li>based on validity, XML docs types are <br>1. well-formed <br>2. broken <br>3.valid</li>
+    </ul>
+    <h2>XSD</h2>
+    <ul>
+        <li>uses XMl syntax</li>
+        <li>provides datatypes, namespaces & is extensible</li>
+        <li>&#60xs:attribute name="attribute_name" type="xs:data_type" /&#62</li>
+        <li>
+            <code>
+                &#60xs:element name="person"&#62 <br>
+                    &#60xs:complexType&#62 <br>
+                        &#60xs:sequence&#62<br>
+                            &#60xs:element name="id" type="xs:int" /&#62<br>
+                            &#60xs:element name="name" type="xs:string" /&#62<br>
+                            &#60xs:element name="age" type="xs:int" /&#62<br>
+                        &#60/xs:sequence&#62<br>
+                    &#60/xs:complexType&#62<br>
+                &#60/xs:element&#62<br>
+            </code>
+        </li>
+        <li>XML elements- simple & complex</li>
+    </ul>
+    <hr>
+    <h1>JSON</h1>
+    <ul>
+        <li>concise data, supports arrays(xml do not)</li>
+        <li>because of JS objects, data is ready to use i.e, easily parsed</li>
+        <li>datatypes: <br>
+            <ol>
+                <li>number</li>
+                <li>string</li>
+                <li>boolean</li>
+                <li>object {}</li>
+                <li>array []</li>
+                <li>null</li>
+            </ol>
+        </li>
+    </ul>
+    <hr>
+    <h1>Serialization</h1>
+    <ul>
+        <li>serialize- object to stream</li>
+        <li>deserialize- stream to object</li>
+        <li>.net supports binary, xml, json Serializations</li>
+    </ul>
+    <h2>XML serialization(XmlSerializer)</h2>
+    <ul>
+        <li><span>System.Xml.Serialization</span></li>
+        <li>Serialize(stream, object)</li>
+        <li>
+            <code>
+                XmlSerializer srzr = new XmlSerializer(typeof(Employee)); <br>
+                srzr.Serialize(file, lst); <br>
+            </code>
+        </li>
+        <li>Deserialize(stream)</li>
+        <li>
+            <code>
+                XmlSerializer srzr= new XmlSerializer(typeof(Employee)); <br>
+                Employee emp = (Employee) srzr.Deserialize(file);
+            </code>
+        </li>
+    </ul>
+    <h2>JSON serialization(DataContractJsonSerializer)</h2>
+    <ul>
+        <li><span>System.Runtime.Serialization.Json</span></li>
+        <li>WriteObject(stream, object)</li>
+        <li></li>
+        <li>ReadObject(stream)</li>
+    </ul>
+    <h2>customizing XML serialization</h2>
+    <ul>
+        <li>XmlRoot - sets as root element <br>
+        <code>[XmlRoot( ElementName="name to be in xml file")]</code>
+        </li>
+        <li>XmlElement - converts to element during serialization <br>
+        <code>[XmlElement( ElementName="element tag name")]</code>
+        </li>
+        <li>XmlAttribute - converts to tag attibute during serialization <br>
+        <code>[XmlAttribute( AttributeName= "name of attribute")]</code>
+        </li>
+        <li>XmlIgnore - ignore this member during serialization <br>
+        <code>[XmlIgnore]</code>
+        </li>
+    </ul>
+    <h2>customizing JSON serialization</h2>
+    <ul>
+        <li>DataContract - specifes a class can be serialized <br>
+        <code>[DataContract]</code> <br>
+        <code>public class Employee{}</code> <br>
+        </li>
+        <li>DataMember - specifies a property to be serialized <br>
+        <code>
+            [DataMember(Name="name to be used in json file")] <br>
+            public int EmpId{ get; set;}; 
+        </code>
+        </li>
+        <li>IgnoreDataMember - ignores during serialization</li>
+    </ul>
+    <hr>
+    <h1>Other C# concepts</h1>
+    <h2>Iterators</h2>
+    <ul>
+        <li>methods/read-only accessors</li>
+        <li>extends IEnumerable & define GetEnumerator() method</li>
+        <li>yield return - to return vales</li>
+        <li>yield break - to end iteration</li>
+    </ul>
+    <a href="./assets/codes/iterators.cs">Iterators code</a>
+    <h2>Partial types</h2>
+    <ul>
+        <li>class body can be divided & place in seperate files</li>
+        <li>partial class files must be in same namespace</li>
+        <li><code>partial class MyClass{  }</code></li>
+    </ul>
+    <h2>Nullable types</h2>
+    <ul>
+        <li>can store null values (by default c# types cannot)</li>
+        <li><code>Nullable&#60type&#62 var_name;</code></li>
+        <li><code>type? var_name;</code></li>
+        <li>System.Nullable.GetValueOrDefault() - returns value,<br> returns default value if it contains null value</li>
+        <li>var_name.Value - returns value, <br>throws exception if has null value</li>
+        <li>var_name.HasValue - return true if has a value<br> returns false if has null</li>
+    </ul>
+    <h2>Global namespace qualifier</h2>
+    <ul>
+        <li>global:: is used to access classes outside a namespace i.e, in global scope</li>
+        <li>
+            <code>
+                class MyClass{ } <br>
+                namespace MyNameSpace{ <br>
+                    class Myclass{ } <br>
+                } <br>
+                MyNameSpace.MyClass(); <br>
+                global::MyClass();
+            </code>
+        </li>
+    </ul>
+    <h2>Inline warnings</h2>
+    <ul>
+        <li>#pragma warning disable --warning code if any--</li>
+        <li>#pragma warning restore</li>
+    </ul>
+    <h2>Extension methods</h2>
+    <ul>
+        <li>to provide custom extension methods to classes, types etc.</li>
+        <li>only static methods inside static classes should be used</li>
+        <li><span>this</span> keyword is mandatory in method argument</li>
+    </ul>
+    <h2>var type (compile time type checking)</h2>
+    <ul>
+        <li>implicitly typed variables</li>
+        <li>type of value cannot be changed once other datatype is assigned</li>
+        <li>must be initialized while declared</li>
+        <li>var a=10; <br>a="ashok"; //error</li>
+    </ul>
+    <h2>dynamic type (runtime type checking)</h2>
+    <ul>
+        <li>like var type</li>
+        <li>datatype of data beign assigning can be changed during runtime</li>
+        <li>dynamic a=10; <br>a="ashok"; //allowed</li>
+    </ul>
+    <h2>Anonymous types</h2>
+    <ul>
+        <li>no type to the data is specified after <span>new</span> keyword</li>
+        <li>
+            <code>
+                var emp = new { empId = 101, empName = "ashok" }; <br>
+                Console.WriteLine(emp.empId); <br>
+                Console.WriteLine(emp.empName); <br>
+            </code>
+        </li>
+    </ul>
+    <h2>Object initializer</h2>
+    <li>new Employee{ EmpId=101, EmpName="ashok"}</li>
+    <hr>
+    <h1>Multi-Threading</h1>
+    <li>threads(light weight process) & processes(one contains many threads)</li>
+    <li>context switching</li>
+    <h2>Thread class (System.Threading)</h2>
+    <ul>
+        <li><span>methods</span></li>
+        <li>Start()</li>
+        <li>Sleep(int interval)</li>
+        <li>Abort()</li>
+        <li>Join()</li>
+        <li>Suspend()</li>
+        <li>Resume()</li>
+    </ul>
+    <ul>
+        <li><span>properties</span></li>
+        <li>CurrentThread</li>
+        <li>IsAlive</li>
+        <li>Priority</li>
+        <li>ThreadState</li>
+    </ul>
+    <h2>Implementing Multi-Threading</h2>
+    <ul>
+        <li>using "ThreadStart" delegate</li>
+        <ul>
+            <li>
+                <code>
+                    ThreadStart dlgt = new ThreadStart(Child.MyMethod); <br>
+                    Thread th = new Thread(dlgt); <br>
+                    th.Start(); <br>
+                </code>
+            </li>
+            <li>
+                <code>
+                    th.Start(); <br>
+                    th.Join(); //takes control to the thread
+                </code>
+            </li>
+        </ul>
+        <li>using "ThreadPool" class</li>
+        <ul>
+            <li>directly- using ThreadPool.QueueUserWorkItem</li>
+            <li>indirectly- using async methods Stream.BeginRead(), BeginInvoke() </li>
+        </ul>
+    </ul>
+    <h2>ThreadPriority</h2>
+    <ul>
+        <li>ThreadPriority enum defines priority level constants</li>
+        <li><code>myThread.Priority= ThreadPriority.Normal</code></li>
+        <li>Lowest, Highest, Normal, BelowNormal, AboveNormal</li>
+    </ul>
+    <span>race condition is avoided using lock(object){ //code to be locked }</span>
+    <h2>Deadlocks</h2>
+    <ul>
+        <li>two threads blocked forever, waiting for each other</li>
+    </ul>
+    <hr>
+    <h1>Parallel programming</h1>
+    <h2>Task (System.Threading.Tasks)</h2>
+    <ul>
+        <li>Task is an asynchronous operation</li>
+        <li>provides APIs called Task Parallel Library (TPL)</li>
+        <li>two generic delegates are used by Tasks</li>
+        <li>Action delegate</li>
+        <ul>
+            <li>stores ref of methods that takes <span>1 argument & returns nothing</span></li>
+            <li><code>public delegate void Action&#60T&#62 (T input)</code></li>
+        </ul>
+        <li>Function delegate</li>
+        <ul>
+            <li>stores ref of methods that takes <span>1 argument & return a value</span> specified by generic parameter</li>
+            <li><code>public delegate TResult Func&#60T, out TResult&#62(T input)</code></li>
+        </ul>
+    </ul>
+    <h2>Creating tasks</h2>
+    <ul>
+        <li><code>Task myTask= new Task(myMethod); <br>
+            myTask.Start();
+        </code></li>
+        <li><code>Task myTask= new Task( <br>
+                ()=> Console.WriteLine("msg from task") <br>
+            ); //task creation using lambda
+        </code></li>
+    </ul>
+    <h2>Task scheduler</h2>
+    <li>responsible for deciding when to run tasks</li>
+    <h2>Task.Status</h2>
+    <ul>
+        <li>Created - task initialized but not scheduled</li>
+        <li>WaitingToRun</li>
+        <li>RanToCompletion</li>
+        <li>Cancelled</li>
+        <li>Faulted</li>
+    </ul>
+    <h2>Data returned from a Task</h2>
+    <li>stored in myTask.Result</li>
+</body>
+</html>

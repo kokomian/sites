@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/master.css">
+    <title>SQL server</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="./index.html">C#</a></li>
+            <li><a href="./advC.html">Advanced C#</a></li>
+            <li><a href="#">SQL server</a></li>
+            <li><a href="./adonetLinq.html">ADO.NET & LINQ</a></li>
+        </ul>
+    </nav>
+    <a href="./assets/codes/notes.txt">SQL primers notes</a>
+    <a href="./assets/codes/ssms.txt">SSMS practice commands</a>
+    <h1>SQL server</h1>
+    <ul>
+        <li>developed my Microsoft</li>
+        <li>enterprise, standard, express, developer editions</li>
+    </ul>
+    <h2>System databases</h2>
+    <ol>
+        <li><span>master</span>: used to create other databases & to store login information, configuration settings</li>
+        <li><span>model</span>: as a template for to create databases</li>
+        <li><span>msdb</span>: sql server agent uses this to schedule jobs & alerts</li>
+        <li><span>tempDB</span>: stores data temporarily, lost when conn is closed</li>
+    </ol>
+    <h2>Data types</h2>
+    <ol>
+        <li>int</li>
+        <li>Decimal(p, s) - p no.of digits & s no.of digits after decimal point</li>
+        <li>numeric(p, s) - </li>
+        <li>float</li>
+        <li>real (double precision than float)</li>
+        <li>char (fixed length non-unicode)</li>
+        <li>varchar</li>
+        <li>nchar (fixed length unicode)</li>
+        <li>nvarchar</li>
+        <li>datetime</li>
+        <li>money</li>
+        <li>small money</li>
+    </ol>
+    <h2>Constraints</h2>
+    <ol>
+        <li>NOT NULL</li>
+        <li>PRIMARY KEY <br>composite primary key- two columns together made primary key</li>
+        <li>UNIQUE</li>
+        <li>FOREIGN KEY</li>
+        <li>CHECK</li>
+        <li>Default - used to provide default values to columns if user don't provide value for it</li>
+    </ol>
+    <h1>DDL (Create, Alter, Drop, (Truncate))</h1>
+    <h2>Identity property</h2>
+    <ul>
+        <li>only one Identity column is allowed</li>
+        <li>auto increments by 1</li>
+        <li>should not give Identity column value during insert</li>
+        <li><code>IDENTITY( SEED, increment/decrement) , default values are IDENTITY(1,1)</code></li>
+        <li><code>CREATE TABLE Employee (empId INT IDENTITY(2,1), ....)</code></li>
+    </ul>
+    <h2>Limiting rows retrieved by SELECT</h2>
+    <ul>
+        <li>WHERE clause</li>
+        <ul>
+            <li>relational operators &#60, &#62, &#60=, &#62=, =, &#60&#62(<span>not equal</span>)</li>
+            <li>logical operators AND, OR, NOT</li>
+            <li>keywords BETWEEN, LIKE, IN</li>
+        </ul>
+        <li>between - boundary values are inclusive</li>
+        <li>in - to compare with a list of words</li>
+        <li>like - % represents zero or more characters <br> _ represents exactly one char to match</li>
+    </ul>
+    <h1>JOINS</h1>
+    <ol>
+        <li>Inner join(equi join- combined based on a common column)</li>
+        <li>left outer join</li>
+        <li>right outer join</li>
+        <li>full outer join</li>
+        <li>cross join (cartesian)</li>
+        <li>self join</li>
+    </ol>
+    <code>
+        SELECT t1.column1, t2.column2 <br>
+            FROM Table1 t1 &#60join statement&#62 ON &#60condition&#62 <br>
+    </code>
+    <ul>
+        <li>no on clause condition for cross join</li>
+    </ul>
+    <h2>Self join</h2>
+    <ul>
+        <li>consider employee table, we need to retrieve employee & their corrosponding manager</li>
+        <li>managers are also employees residing in the same table</li>
+        <li>now self join is used</li>
+        <li><code>SELECT E.ename, M.ename <br>  
+            FROM Employee E <br>
+            INNER JOIN Employee M <br>
+            ON E.managerId=M.empId
+        </code></li>
+    </ul>
+    <h1>Variables</h1>
+    <ul>
+        <li>local vars @</li>
+        <li>global vars @@ (can't be created by us)</li>
+    </ul>
+    <h2>Global variables</h2>
+    <ul>
+        <li>@@ERROR - error number of last sql statement</li>
+        <li>@@IDENTITY - gives Identity value which is last inserted</li>
+        <li>@@ROWCOUNT - no.of affected rows by last query</li>
+        <li>@@SERVERNAME</li>
+        <li>@@LANGUAGE</li>
+    </ul>
+    <h2>Exception handling</h2>
+    <ul>
+        <li>
+            BEGIN TRY ... END TRY <br>
+            BEGIN CATCH ... END CATCH
+        </li>
+    </ul>
+    <h1>Stored Procedures</h1>
+    <ul>
+        <li>pre-compiled object containing set of SQL statements treated as a single unit</li>
+        <li>system stored procedures & user defined stored procedures</li>
+        <li>can return only INTEGER values using Return statement</li>
+        <li>
+            <code>
+                CREATE PROC(EDURE) spGetEmployees  <br>
+                AS <br>
+                BEGIN <br>
+                    &emsp;SELECT * FROM Employee; <br>
+                END <br>
+                GO <br>
+            </code>
+            <i>EXEC(UTE) spGetEmployees</i>
+        </li>
+        <li>
+            <code>
+                CREATE PROCEDURE spGetEmployee(@empID int) <br>
+                AS <br>
+                BEGIN <br>
+                &emsp;SELECT * FROM Employee WHERE empId=@empID; <br>
+                END <br>
+                GO <br>
+            </code>
+            <i>EXEC spGetEmployee 101</i>
+        </li>
+    </ul>
+    <h2>OUT parameters in SP</h2>
+    <code>
+        CREATE PROC spADD( @num1 INT, @num2 INT, @result INT OUTPUT) <br>
+        EXEC spADD 10, 20, @res OUTPUT;
+    </code>
+    <ul>
+        <li>OUTPUT parameters can be of any type varchar, date, char, datetime etc.,</li>
+    </ul>
+    <h1>VIEWS</h1>
+    <ul>
+        <li>Virtual tables defined by SELECT query</li>
+        <li>operations done on VIEWS will make changes on tables on which the view is created</li>
+        <li>simple views - made from a single table</li>
+        <li>complex views - made from multiple tables</li>
+        <li>
+            <code>
+                CREATE VIEW vw_MyTableView AS SELECT * FROM Employee <br>
+                <br>
+                SELECT * FROM vw_MyTableView; <br>
+                DELETE FROM vw_MyTableView WHERE eid=103; <br>
+            </code>
+        </li>
+    </ul>
+    <h1>Transactions</h1>
+    <ul>
+        <li>sequence of sql statements performed as a single unit</li>
+        <li>COMMIT - ensures changes in the database are made permanent</li>
+        <li>ROLLBACK - reverts all changes from the begining of transaction in case of errors</li>
+        <li>properties of Transaction (ACID)</li>
+        <ol>
+            <li>Atomicity</li>
+            <li>Consistency</li>
+            <li>Isolation</li>
+            <li>Durability</li>
+        </ol>
+    </ul>
+
+</body>
+</html>

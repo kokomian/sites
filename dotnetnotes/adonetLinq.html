@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/master.css">
+    <title>ADO.NET & LINQ</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="./index.html">C#</a></li>
+            <li><a href="./advC.html">Advanced C#</a></li>
+            <li><a href="./sql.html">SQL server</a></li>
+            <li><a href="#">ADO.NET & LINQ</a></li>
+        </ul>
+    </nav>
+    <h1>ADO.NET (ActiveX Data Objects)</h1>
+    <ul>
+        <li><span>framework</span> used to connect .NET apps to different Data Sources</li>
+        <li>uses special namespaces called <span>Data Providers</span></li>
+        <li>can connect to variety of data sources MS SQL Server, Oracle, XML, Excel files etc..</li>
+        <li>architecture <br>
+            <img src="./assets/adonetArch.png" alt="adonet architecture">
+        </li>
+    </ul>
+    <h2>Data providers</h2>
+    <ul>
+        <li>connect to DB</li>
+        <li>execute commands</li>
+        <li>retrieve results</li>
+    </ul>
+    <table border="1px">
+        <thead>
+            <th>Provider name</th>
+            <th>API prefix</th>
+        </thead>
+        <tr>
+            <td>ODBC Data Provider(Open DB Connectivity - for older/legacy DB)</td>
+            <td>Odbc</td>
+        </tr>
+        <tr>
+            <td>Oledb data provider (Object Linking & Embedding database - for SQL server, access, excel)</td>
+            <td>OleDb</td>
+        </tr>
+        <tr>
+            <td>Oracle Data Provider</td>
+            <td>Oracle</td>
+        </tr>
+        <tr>
+            <td>SQL data provider (for MS SQL servers)</td>
+            <td><span>Sql</span></td>
+        </tr>
+        <tr>
+            <td>Entity Client Provider (for apps using EntityDataModel)</td>
+            <td>Entity</td>
+        </tr>
+    </table>
+    <h1>classes in SQL Data provider</h1>
+    <ol>
+        <li>SqlConnection</li>
+        <li>SqlCommand</li>
+        <li>SqlDataReader - obtain results in fast, forward-only, read-only stream</li>
+        <li>DataSet - in memory representation of data</li>
+        <li>SqlDataAdapter - transfer data to&from datasources in disconnected mode</li>
+    </ol>
+    <h1>Connected mode</h1>
+    <ul>
+        <li>SqlConnection, SqlCommand, SqlDataReader classes are used</li>
+        <li>conn should be open till all ops are finished</li>
+    </ul>
+    <h1>Disconnected mode</h1>
+    <ul>
+        <li>SqlDataAdapter, DataSet, DataTable</li>
+        <li>data is retrieved and stored in memory & then conn is closed</li>
+        <li>operations are performed on in-memory data</li>
+        <li>conn is opened again & updated to the DB</li>
+    </ul>
+    <h2>SqlConnection</h2>
+    <code>SqlConnection conn = new SqlConnection( &#60data source&#62, &#60initial catalog&#62, &#60integrated security&#62)</code> <br>
+    <code>SqlConnection conn = new SqlConnection( @"Data Source=LocalDB; Initial Catalog=PracticeDB; Integrated Security=true")</code>
+    <h2>SqlCommand</h2>
+    <li>to execute queries in both connected & disconnected modes</li>
+    <ul>
+        <li>with out parameters <br>
+            <code>SqlCommand cmd= new SqlCommand();</code>
+        </li>
+        <li>with query <br>
+            <code>SqlCommand cmd= new SqlCommand( myQuery);</code>
+        </li>
+        <li>with query & connection <br>
+            <code>SqlCommand cmd= new SqlCommand( myQuery, conn);</code>
+        </li>
+        <li>with query, connection & transaction br
+            <code>SqlCommand cmd= new SqlCommand( myQuery, conn, transaction);</code>
+        </li>
+    </ul>
+    <li>Commonly used methods of SqlCommand class</li>
+    <ul>
+        <li>ExecuteReader()</li>
+        <li>ExecuteNonQuery()</li>
+        <li>ExecuteScalar()</li>
+        <li>ExecuteXmlReader()</li>
+    </ul>
+    <li>passing parameters to SqlCommand</li>
+    <ul>
+        <li>Add() - need to pass SqlParameter object <br>
+            <code>
+                SqlParameter p= new SqlParameter(); <br>
+                p.ParameterName = "@empid"; <br>
+                p.Value = input empid; <br>
+                command.Parameters.Add(p);
+            </code>
+        </li>
+        <li>AddWithValue() - variable & value passed directly <br>
+            <code>
+                command.Parameters.AddWithValue( "@empid", 101);
+            </code>
+        </li>
+    </ul>
+    <h2>SqlDataReader</h2>
+    <ul>
+        <li><code>SqlDataReader dr= new SqlDataReader();</code></li>
+        <li><code>dr = cmd.ExecuteReader();</code></li>
+        <li><code>dr = cmd.ExecuteReader(CommandBehaviour.CloseConnection);</code> //closes connection after reading</li>
+        <li><code>dr.Read() returns row</code></li>
+        <li>reads stream one row at a time, previous row will be lost after reading current row</li>
+        <li>if SqlDataReader object is in use, conn object will be locked for other use</li>
+        <li>dr.Close() releases conn object</li>
+    </ul>
+    <h2>USING block</h2>
+    <ul>
+        <li>will automatically closes connection when control is out of scope</li>
+        <li><code>
+            using(SqlConnection conn = new SqlConnection(@"Data Source=LocalDB; Initial Catalog=PracticeDB; Integrated Security=true")){ <br>
+                //code; <br>
+            } <br>
+            //connection is closed implicitly
+        </code></li>
+    </ul>
+    <h2>SqlDataAdapter</h2>
+    <ul>
+        <li>implicitly manages conn open & close when it's required</li>
+        <li>returns data to DataSet</li>
+        <li><code>SqlDataAdapter da= new SqlDataAdapter(&#60query&#62, conn)
+            <br>da.Fill(myDataset, --tablename--); //fill is used to store data in dataset/dataable
+            <br>da.Update(myDataset); //updates changed made in dataset to the datasource
+        </code></li>
+        <li>no need to use conn.Open()</li>
+    </ul>
+    <ol>
+        <li>DataSet can store a collection of tables</li>
+        <li>DataTable stores a single table</li>
+        <li>DataTable contains DataRow, DataColumn, constraint objects</li>
+    </ol>
+    <h1>calling stored procedures</h1>
+    <ul>
+        <li>parameters of sp are passed through SqlParameter object</li>
+        <li>cmd.CommandType = CommandType.StoredProcedure</li>
+    </ul>
+    <hr>
+    <hr>
+    <h1><span>LINQ (Language Integrated Query)</span></h1>
+    <ul>
+        <li><span>System.Linq</span></li>
+        <li><span>System.Linq.Expressions</span></li>
+        <li>framework for structured type-safe queries</li>
+        <li>LINQ query is called <span>Query expression</span> or <span>Query syntax</span></li>
+        <li>obtain data source <br>create query <br>execute query <br></li>
+    </ul>
+    <h2>Linq Query operations sequence</h2>
+    <ol>
+        <li>Obtain data source</li>
+        <li>filter</li>
+        <li>order</li>
+        <li>group</li>
+        <li>join</li>
+        <li>select</li>
+    </ol>
+    <h2>Linq expressions</h2>
+    <code>var result = from num in myArray <br>
+        &emsp;where (num % 2==0) <br>
+        &emsp;select num;</code>
+    <p>lambda expressions : myArray.Select( num=> num)</p>
+    <p>myArray.Where( num=> num%2==0)</p>
+    <ol>
+        <li>
+            <h2>Linq to SQL</h2>
+            <p>an API to work with MS SQL Server</p>
+            <p>Linq provides <span>Object-to-Relational Mapping (ORM)</span></p>
+            <P>DataContext establishes connection to the DB</P>
+        </li>
+        <li>
+            <h2>Linq to Objects</h2>
+            <p>to create iteration logic through IEnumerable collection</p>
+            <p>to perform queries on arrays & in-memory collection objects</p>
+        </li>
+        <li>
+            <h2>Linq to DataSet</h2>
+            <p>DataRowCollections, DataTableCollections, ConstraintCollections</p>
+        </li>
+        <li>
+            <h2>Linq to XML</h2>
+            <p>System.Xml.Linq</p>
+        </li>
+        <li>
+            <h2>Linq to Entities</h2>
+
+        </li>
+    </ol>
+</body>
+</html>

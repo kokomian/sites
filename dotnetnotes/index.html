@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/master.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#">C#</a></li>
+            <li><a href="./advC.html">Advanced C#</a></li>
+            <li><a href="./sql.html">SQL server</a></li>
+            <li><a href="./adonetLinq.html">ADO.NET & LINQ</a></li>
+        </ul>
+    </nav>
+    <h1>.NET (Network Enabled Technologies)</h1>
+    <p><i>available in <b>C:\Windows\Microsoft.NET\Framework64\v4.x.x</b></i></p>
+    <ul>
+        <li>a development & execution environment</li>
+        <li>supports Object oriented languages #C, F#, VisualBasic, Visual C++</li>
+        <li>features: Inter-operability, cross platform, baseclass library, lang independence, easy deployment, security</li>
+        <img src="./assets/framework.png" alt="framework structure">
+        <br>
+        <img src="./assets/netstack.png" alt=".net frameworks stack">
+    </ul>
+    <h1>COMPONENTS OF .NET FRAMEWORK</h1>
+    <ol>
+        <li>CLR - Common Language Runtime</li>
+        <li>.NET framework class library</li>
+        <li>CTS - Common Type System</li>
+        <li>CLS - Common Language Specification</li>
+        <li>Assemblies</li>
+        <li>Windows Forms</li>
+        <li>ASP.NET - Active Server Pages</li>
+        <li>ADO.NET - Activex Data Objects</li>
+        <li>WWF - Windows Workflow Foundation</li>
+        <li>WPF - Windows Presentation Foundation</li>
+        <li>WCF - Windows Communication Foundation</li>
+        <li>Windows Cardspace</li>
+        <li>LInQ - Language Integrated Query</li>
+        <li>Parallel Programming</li>
+    </ol>
+    <h1>CLR - Common Language Runtime</h1>
+    <img src="./assets/clr_execution.jpg" alt="CLR flowchart">
+    <ul>
+        <li>reponsible for allocating and deallocating memory for programs in runtime</li>
+        <li>any code managed by CLR is called <span>Managed Code</span></li>
+        <li>1. Language compilers produces <span>MSIL(microsoft intermediate lang) code</span> from src code</li>
+        <li>2. CLR's JustInTime compiler converts these MSIL code into <span>Native Code</span></li>
+    </ul>
+    <h1>BCL - Base Class Library/ .NET framework Class Library</h1>
+    <ul>
+        <li>provides predefined classes common for all the languages those supported by .NET</li>
+        <li>need to use the SYNTAX corrosponding to the Classes</li>
+    </ul>
+    <h1>CTS - Common Type System</h1>
+    <ul>
+        <li>set of datatypes common to the .net supported languages</li>
+        <li>facilitates inter language communication</li>
+        <li>Ex: in C#, int a=10 <br>in VB Integer a=10 <br>by using CTS, System.Int32 a=10</li>
+        <li>System.Int64 <br>System.Double</li>
+    </ul>
+    <h1>CLS - Common Language Specification</h1>
+    <ul>
+        <li>subset of CTS</li>
+        <li>provides set of rules to be followed by all lang compilers targetting CLR</li>
+        <li>to ensure cross language communication</li>
+        <li>ex: local variables must be initialized <br>abstract classes can't be instantiated <br>instance members must be only accessed through objects</li>
+    </ul>
+    <h1>Assemblies</h1>
+    <ul>
+        <li><span>Compiled code</span> ready for deployment with a version</li>
+        <li>.exe(executable) or .dll(reusable)</li>
+        <li>collection of datatypes & resources as a functional unit</li>
+        <li>contains: <br>assembly metadata <br>type metadata <br>MSIL code <br>resources</li>
+        <li>types: <span>Private & Shared</span></li>
+        <li>Private: specific to an application, may not contain a strong name</li>
+        <li>Shared: resides in GAC, should contain a strong name</li>
+    </ul>
+    <h1>GAC - Global Assembly Cache</h1>
+    <ul>
+        <li>System.dll resides in <i>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System\v4.x.x</i></li>
+        <li>gacutil.exe is used to add/remove dll files to/from GAC</li>
+    </ul>
+    <h1>Available IDEs</h1>
+    <ul>
+        <li>Visual Studio</li>
+        <li>Adobe Dreamweaver</li>
+        <li>Frontpage</li>
+        <li>Eclipse, Jbuilder, Intellij for JAVA apps</li>
+    </ul>
+    <h1>Visual Studio Overview</h1>
+    <ul>
+        <li>for developing web-based, windows-based, console apps</li>
+        <li>features: multi-monitor support <br>
+            code editor <br>
+            search as you type <br>
+            call hierarchy(navigate the code as the control flows) <br>
+            debugging <br>
+            IDE features corrospond to current project(adding reference will link the compatible libraries to the version .net framework in use) <br>
+            easy deployment <br>
+            extension manager <br>
+            code generation & text templates <br>
+            help window <br>
+        </li>
+    </ul>
+    <hr>
+    <h1>C# Features</h1>
+    <ol>
+        <li>object oriented</li>
+        <li>type safe</li>
+        <li>versionale</li>
+        <li>Inter-operability</li>
+        <li>multi threaded</li>
+    </ol>
+    <h1>C# src file structure</h1>
+    <b><i>using statement; <br>
+        namespace declaration; <br>
+        class declaration
+    </i></b>
+    <h1>Comments</h1>
+    <ol>
+        <li>single line //</li>
+        <li>multi line /* ..... */</li>
+        <li>Documentation comments ///</li>
+    </ol>
+    <h1>Class</h1>
+    <p>fundamental unit of a C# program, allows us to create a custom datatype by grouping variables & functions</p>
+    <p>program execution starts from Main() method & "String[] args" can be passed as command line arguments to Main()</p>
+    <h2>Statement</h2>
+    <p>unit of work that has be terminated by ";"</p>
+    <h1>NameSpace</h1>
+    <ul>
+        <li>group of logically related classes</li>
+        <li>reduces name collisions</li>
+        <li>within a namespace we can declare one or more </li>
+        <ol>
+            <li>classes</li>
+            <li>interfaces</li>
+            <li>delegates</li>
+            <li>structs</li>
+            <li>enums</li>
+            <li>namespaces</li>
+        </ol>
+        <li><code>namespace MyNameSpace{ <br>
+            class MyClass{ <br>
+                //variables; <br>
+                //methods; <br>
+            }
+            }</code>
+        </li>
+        <li>MyClass can be accessed as "MyNameSpace.Myclass"</li>
+    </ul>
+    <h1>Keywords</h1>
+    <ul>
+        <li>reserved words that convey a specific meaning to the compiler</li>
+        <li>can be used as Identifiers if we prefix @ to the keyword</li>
+        <li>switch is not a valid identifier</li>
+        <li>@switch can be used as an identifier</li>
+        <li><span>Contextual keywords are Keywords but not reserved, and they convey a specific meaning in a limited program context</span></li>
+        <li>newly created keywords are added to Contextual keywords</li>
+    </ul>
+    <h1>Identifiers</h1>
+    <i>names given to the componenents in a program (variables, methods, classes etc.)</i>
+    <h1>Literals</h1>
+    <i>values stored in variables</i>
+    <ol>
+        <li>Numeric (integer, floating)</li>
+        <li>character (single character, strings)</li>
+        <li>booleans</li>
+    </ol>
+    <h1>Constants</h1>
+    <i>variables whose values can't be changed during program execution</i>
+    <i>const double pi=3.14</i>
+    <h2>Variables</h2>
+    <i>name given to a memory location</i>
+    <h2>Data types</h2>
+    <i>tells the type of data present in a variable</i>
+    <i>value types(int, double, etc.) & reference types (arrays, strings, etc.)</i>
+    <h1>Value types</h1>
+    <li>stores the data directly in the stack memory</li>
+    <h2>Integral types</h2>
+        <i><b>Integer types</b></i>
+        <ol>
+            <li>char - 2Bytes (Unicode)</li>
+            <li>byte - 1B</li>
+            <li>sbyte - 1B</li>
+            <li>short - 2B</li>
+            <li>ushort - 2B</li>
+            <li>int - 4B</li>
+            <li>uint - 4B</li>
+            <li>long - 8B</li>
+            <li>ulong - 8B</li> 
+        </ol>
+        <i><b>Floating point types</b></i>
+        <ol>
+            <li>float - 4B (7 decimal points)</li>
+            <li>double - 8B (15-16 decimal points)</li>
+        </ol>
+        <i><b>Decimal type</b></i>
+        <li>High precision floating point numbers - 16B (28-29 decimal points)</li>
+        <i><b>Booleans (true, false)</b></i>
+        <i><b>Struct types</b></i>
+        <li>to group multiple data types together</li>
+        <i><b>Enumerations</b></i>
+        <li>group of integer constants</li>
+        <li>gives a name to those integer constants</li>
+        <code>enum MyEnum{ val1, val2, val3, .....}</code>
+        <br>
+    <h1>Reference Types</h1>
+    <li>stores data in Heap memory and stores only the address/reference to the data in stack memory</li>
+    <ol>
+        <li>class</li>
+        <li>interface</li>
+        <li>delegates</li>
+        <li>array</li>
+        <li>string</li>
+        <li>object</li>
+    </ol>
+    <h2>Variable scope</h2>
+    <i>Member variables - declared directly in Class i.e, outside of methods & within the class <br> and accessible by all methods in the class</i>
+    <i><br>Local variables - declared inside a method, hence accessible only inside that method <br>method parameters also comes under local variables</i>
+    
+    <h1>Default values stored in All Data Types</h1>
+    <table border="1px">
+        <tr>
+            <td>All integer types</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>char</td>
+            <td>'\x000'</td>
+        </tr>
+        <tr>
+            <td>float</td>
+            <td>0.0f</td>
+        </tr>
+        <tr>
+            <td>double</td>
+            <td>0.0d</td>
+        </tr>
+        <tr>
+            <td>decimal</td>
+            <td>0.0m</td>
+        </tr>
+        <tr>
+            <td>bool</td>
+            <td>false</td>
+        </tr>
+        <tr>
+            <td>enum</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>all reference types</td>
+            <td>null</td>
+        </tr>
+    </table>
+    <h1>Boxing & Unboxing</h1>
+    <li>Boxing: Value type -> reference type</li>
+    <code>Object obj = 10;</code>
+    <li>Unboxing: Reference type -> value type</li>
+    <code>Object obj = 10;<br>int num = (int) obj;</code>
+    <h1>Type Casting</h1>
+    <li>implicit( done by compiler) - can only convert to a higher data types in the hierarchy </li> 
+    <li>explicit (manually by programmer) - data losses may occur when converting to lower types</li>
+    <h3>Note</h3>
+    <b><span>in switch, we must use break statement because C# don't allow fall-through<br>we can achieve fall-through by using goto statement or leaving a case block emppty </span></b>
+    <h1>Operators</h1>
+    <ol>
+        <li>Unary operators (+, -, ++, --)</li>
+        <li>Arithmetic operators (+, -, *, /, %)</li>
+        <li>String operators (+ concatenates two strings)</li>
+        <li>Relational operators (<, >, <=, >=, ==, !=)</li>
+        <li>Conditional operator ( exp1 ? exp2 : exp3)</li>
+        <li>Logical operators ( !, &&, ||)</li>
+        <li>Binary operators ( and &, or |, xor ^)</li>
+        <li>Assignment operators (=, +=, -=, *=, /=, %=, &=, |=, ^=)</li>
+    </ol>
+    <h1>Flow control & Looping</h1>
+    <ol>
+        <li>if-else <br> if - else if - else</li>
+        <li>for</li>
+        <li>while</li>
+        <li>do-while</li>
+    </ol>
+    <hr>
+    <h1>Arrays</h1>
+    <li>group of elements of same data type</li>
+    <li><span>array_name.Length</span> returns length of the array</li>
+    <li><code>dataType[] array_name = new dataType[size];</code></li>
+    <li>declaration: <code>int[] arr_name = new int[size];</code></li>
+    <li>initialization: <code>int[] arr_name = new int[] { 1, 2, 3, 4}</code></li>
+    <li>assignment: <code> <br>int[] arr_name = new int[3]; <br>arr_name[0]=1; <br>arr_name[1]=2; <br>arr_name[2]=3;</code></li>
+    <h2>Multi dimensional arrays</h2>
+    <li>2D array: <code>int[,] myMatrix = new int[ m, n];</code></li>
+    <li>3D array: <code>int[,,] myMatrix = new int[ x, y, z];</code></li>
+    <h2>Jagged array</h2>
+    <li>the array below contains 3 rows & the no.of columns may vary for different rows</li>
+    <code>
+        int[][] myJaggedArr = new int[3][]; <br>
+        myJaggedArr[0] = new int[2]; //first row contains 2 columns <br>
+        myJaggedArr[1] = new int[3]; //second row contains 3 columns <br>
+        myJaggedArr[2] = new int[4]; //third row contains 4 columns <br>
+    </code>
+    <li><span>while traversing jagged array, inner for loop should use Length property of the corrosponding row because the size may be different for all rows</span></li>
+    <h2>foreach loop</h2>
+    <code>foreach(datatype var_name in exp){ ..... }</code>
+    <hr>
+    <h1>Methods & Method calling</h1>
+    <li>a block of statements that performs a specific task</li>
+    <code>
+        <i>modifer type</i> method_name( <i>parameters</i> ){ <br>
+            //body; <br>
+        }
+    </code>
+    <li><span>Method signature: method name, type of it's parameters uniquely identifies the method <br>parameter list is also known as method signature</span></li>
+    <h2>calling a method</h2>
+    <li>calling through class name: static methods are called using Class name</li>
+    <li>calling through objects of a class: normal methods are called using instances of a class</li>
+    <h2>Parameter types (6)</h2>
+    <ol>
+        <li>
+            value type parameters <br>
+            <code>obj.MyMethod( num1, num2); //num1, num2 are value types like int</code>
+        </li>
+        <li>
+            reference parameters <br>
+            modification of data in method will reflect in the variables of calling method <br>
+            pass by reference: <code>obj.MyMethod( ref num1, ref num2);</code> //ref keyword should be indicated in method declaration also
+        </li>
+        <li>
+            output parameters <br>
+            causes the variable to be passed by reference but mentions it as a output so it must be initialized in the Called Method
+        </li>
+        <li>
+            optional parameters <br>
+            <code>void MyMethod( int a, int b=10)</code> <br>
+            here b is optional parameter, we may/maynot pass the value of b from Calling method <br>
+            <span>must be declared after the required parameters</span>
+        </li>
+        <li>
+            named arguments <br>
+            <code>
+                void MyMethod ( int a, String name, double val) {....} <br>
+                obj.MyMethod( name= "ashok", val=3.14, a=10);
+            </code>
+        </li>
+        <li>
+            parameter arrays <br>
+            allows us to specify a 1D array that takes any no.of arguments as a single unit <br>
+            params should be the last argument in the method declaration & only one param is allowed <br>
+            <code>
+                void MyMethod( params int[] paraList){ ... } <br>
+                obj.MyMethod( 10, 20, 30); <br>
+                obj.MyMethod( 10, 30, 50, 70, 90);
+            </code>
+        </li>
+    </ol>
+    <hr>
+    <h1>OOPS features</h1>
+    <ol>
+        <li>Class</li>
+        <li>Object</li>
+        <li>Inheritance</li>
+        <li>Polymorphism</li>
+        <li>Abstraction</li>
+        <li>Encapsulation (binding data with the methods manipulate that data)</li>
+    </ol>
+    <li>class is a blueprint</li>
+    <li>an object has 1. State (identity, attributes, state) 2. Behaviours (methods, events)</li>
+    <li>object is a real world entity made from a blueprint(Class)</li>
+    <h2>Access specifiers</h2>
+    <ol>
+        <li>public - visible everywhere</li>
+        <li>private - only accessible inside the present class</li>
+        <li>internal - only in the current Assembly</li>
+        <li>protected - only accessible in current class & it's child class</li>
+        <li>protected internal - accessible in containing program or assembly & in the child classes</li>
+    </ol>
+    <h2>member modifiers</h2>
+    <ol>
+        <li>new - allows to create a method in child having the same signature as a method in parent</li>
+        <li>abstract - to specify an incomplete componenent</li>
+        <li>static - a member that don't belong to a specific instance, but to the Class</li>
+        <li>readonly - constant fields are assigned during declaration or in constructor</li>
+        <li>sealed - a member that can't be inherited</li>
+        <li>virtual - specifies a method may be overridden in childes</li>
+        <li>override - specifies that childe class provides a new implementation for virtual/abstract method from parent</li>
+    </ol>
+    <h2>Encapsulation</h2>
+    <ul>
+        <li>gives ability to hide data from users</li>
+        <li>implemented using private keywords</li>
+        <li>access to data is controlled using getters & setters</li>
+        <li>properties - class member to write & read data from private data members</li>
+        <code>
+            access_specifier return_type PropName{ <br>
+                get{} <br>
+                set{} <br>
+            } <br>
+            public string EmpName{ <br>
+                get{} <br>
+                set{} <br>
+            }
+        </code>
+        <ol>
+            <li>read only - get</li>
+            <li>write only - set</li>
+            <li>read write - both get & set</li>
+        </ol>
+        <li>Asymmetric properties - using different visibility levels for set & get accessors of a property
+            <br>visibility of set&get should be strict subset of visibility level of the property
+        </li>
+        <li>automatic properties - by default the field will be private</li>
+        <code>public string EmpName{ get; set;}</code>
+    </ul>  
+    <h2>Indexer</h2>
+    <ul>
+        <li>allows an object to be accessed as an array</li>
+        <li>implemented using "this" keyword</li>
+        <code>
+            class MyClass{ <br>
+                public string[] Emps= new string[5]; <br>
+                public string this[int i]{ <br>
+                    get{ return Emps[i]; } <br>
+                    set{ Emps[i] = value; } <br>
+                } <br>
+            } <br>
+            ... <br>
+            MyClass obj= new MyClass(); <br>
+            obj[1]= "ashok"; <br>
+            Console.WriteLine(obj[1]);
+        </code>
+    </ul>
+    <h1>Garbage collection</h1>
+    <ul>
+        <li>finalize: Garbage collector(GC) calls finalize() when it finds an object without reference</li>
+        <li>dispose: to explicitly release memory Dispose() should be used from IDisposable interface</li>
+        <li>GC uses internal memory unit called Finalization Queue to maintain a list of objects, at runtime a special thread is used to find unused objects</li>
+    </ul>
+    <hr>
+    <h1>Constructors</h1>
+    <ul>
+        <li>to initialize member variables</li>
+        <li>no return type</li>
+        <li>can be public, private, static</li>
+        <li>Types of Constructors
+            <ol>
+                <li>default: without parameters & used to assign default values to member variables <br>
+                    <code>
+                        Employee(){ <br>
+                            emdId= 0; <br>
+                            empName= null; <br>
+                        }
+                    </code>
+                </li>
+                <li>parameterized</li>
+            </ol>
+        </li>
+    </ul>
+    <hr>
+    <h1>Static (classes, methods, variables, constructors)</h1>
+    <h2>Static variables</h2>
+    <ul>
+        <li>all instances share the copy of the static variable</li>
+    </ul>
+    <h2>Static constructors</h2>
+    called when one of these happens & executes <span>only once</span> in the program life cycle
+    <ol>
+        <li>before 1st instance of a class is created</li>
+        <li>when any static variable is referenced</li>
+        <li>any static method is invoked</li>
+        <li>when 1st object of class is created</li>
+    </ol>
+    <ul>
+        <li>mostly used to initialize static variables before the instances being created</li>
+        <li><span>no access specifiers, return type, parameters</span></li>
+    </ul>
+    <h2>Static methods</h2>
+    <ul>
+        <li>used to access only static variables</li>
+        <li>to perform operations on static variables</li>
+    </ul>
+    <h2>Static classes</h2>
+    <ul>
+        <li>can only contain static variables & static methods</li>
+        <li>do not support inheritance</li>
+        <li>cannot create instances (faster access to members using the class name)</li>
+    </ul>
+    <hr>
+    <h1>Inheritance</h1>
+    <li>allows reuse of characteristics & functionality of another class</li>
+    <li>Types</li>
+    <ol>
+        <li>single - Child : Parent</li>
+        <li>multi-level - Parent:GrandParent, Child : Parent</li>
+        <li>multiple - child: parent1, parent2 (not possible)</li>
+        <li>hierarchical - multiple child extends a single parent <br>child1:Parent child2:Parent child3:Parent</li>
+        <li>hybrid - combination of 2 or more types of inheritances ex. diamond shape (multiple + hierarchical)</li>
+    </ol>
+    <li>constructor chaining: calls the default constructor of parents implicitly(from top-level parent to child)</li>
+    <h1>Exceptions</h1>
+    <ul>
+        <li>System.Exception</li>
+        <ol>
+            <li>SystemException - ArithmeticException, SqlException etc.</li>
+            <li>ApplicationException - custom classes</li>
+        </ol>
+        <li>properties of Exception</li>
+        <ol>
+            <li>Message</li>
+            <li>StackTrace</li>
+            <li>InnerException</li>
+        </ol>
+        <li>Custom Exception</li>
+        <code>
+            public class MyException: ApplicationException{ <br>
+                public MyException(): base(){} <br>
+                public MyException(string message): base(message){} <br>
+            } <br>
+            MyException obj= new MyException("self defined exception"); <br>
+            throw obj;
+        </code>
+    </ul>
+    <hr>
+    <h1>Polymorphism</h1>
+    <ol>
+        <li>early binding/ static/ compile time - achieved using method overloading</li>
+        <li>late binding/ dynamic/ run-time - achieved usign method overriding</li>
+    </ol>
+</body>
+</html>

@@ -1,0 +1,15 @@
+CREATE DATABASE Practice
+
+USE Practice
+
+CREATE TABLE Employee (eid INT, ename VARCHAR(MAX), salary INT) 
+INSERT INTO Employee (eid, ename, salary) VALUES(101, 'ashok', 10000)
+INSERT INTO Employee (eid, salary, ename) VALUES(102, 10000, 'satya')
+INSERT INTO Employee VALUES (103, 'roopai', 15000)
+
+ALTER TABLE Employee ALTER COLUMN eid int NOT NULL
+ALTER TABLE Employee ADD CONSTRAINT myConstraintName PRIMARY KEY(eid)
+
+SELECT * FROM Employee
+SELECT * FROM Employee where salary between 10000 and 20000;
+DELETE FROM Employee
