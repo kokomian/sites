@@ -1,0 +1,67 @@
+body{
+	   margin:2%;
+	   background:#000000;
+}
+header{
+	color:#000000;
+	background:-moz-linear-gradient(top,#ff6000 0%,#fff000 100%);
+	background:-webkit-linear-gradient(top,#ff6000 0%,#fff000 100%);
+	background:-o-linear-gradient(top,#ff6000 0%,#fff000 100%);
+	background:linear-gradient(top,#ff6000 0,#fff000 100%);
+	text-align:center;
+	font-size:150%;
+}
+header h1{ padding:10px; }
+section table th{
+	text-align:left;
+}
+section table td{
+	text-align: center;
+}
+section table{
+	width:90%;
+	margin-left:5%;
+}
+section img{
+	width:5
+	100%;
+}
+	
+section {
+	background:-moz-linear-gradient(top,#00ff50 0%,#00dddd 100%);
+	background:-webkit-linear-gradient(top,#00ff50 0%,#00dddd 100%);
+	background:-o-linear-gradient(top,#00ff50 0%,#00dddd 100%);
+	background:linear-gradient(top,#00ff50 0%,#00dddd 100%);
+}
+p{ 
+	color:#ffffff;
+	width:80%;
+	text-align:justify;
+	padding-left:10%;
+	padding-right:10%;
+}
+img{
+	width:60%;
+	padding-left:20%;
+	padding-right:20%;
+}
+footer{
+	background:#ffff90;
+	padding:5%;
+}
+div{
+	text-align:center;
+	font-size:200%;
+}
+button{
+	display:block;
+	width:16%;
+	margin-left:42%;
+	margin-right:42%;
+	margin-bottom:5px;
+}
+button a{
+	text-decoration:none;
+	color:blue;
+	font-size:200%;
+}
