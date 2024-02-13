@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ehe</title>
+    <style>
+      body {
+        background-color: rgba(0,36,107, 0.8);
+        color: #CADCFC;
+        font-size: 2.6rem;
+       }
+       .container{
+         position: relative;
+         padding:1em;
+         text-align: center;
+       }
+       button{
+         color: white;
+         font-size: 3rem;
+         padding: 0.6em 1em;
+         width: 40%;
+         max-width: 500px;
+         height: 30%;
+         max-height:500px;
+         display: block;
+         border-radius: 16px;
+         margin: auto;
+         margin-bottom: 0.2em;
+       }
+       #yesBtn{
+         background-color: rgba(0,250,0,0.55);
+       }
+       #noBtn{
+         background-color: rgba(250,0,0,0.65);
+       }
+    </style>
+    <script>
+var index = 0;
+var messages = [
+  "really?? :(((",
+  "are you suree?? :((",
+  "pleaseeeeee T-T",
+  "think againnnn TTTT-TTTT",
+  "ohh...okay...",
+  "do you trust me?"
+  ];
+var opac = 1;
+var winflag = 0;
+var winn = "YESSSSS WE WONNNN 😘😘😘😘😘😘😘😘";
+function MoveOut(){
+  if(winflag==0){
+    document.getElementById('yesBtn').style.opacity = opac - 0.1;
+    opac -= 0.1;
+  }
+  else{
+    WeWon();
+  }
+}
+function ShowMessage(){
+  if(index>5){
+    document.getElementById('msg').innerHTML = "(hutao evil laughs) You have now where to go...";
+    document.getElementById('hutao').src = "./hu.png";
+  }else if(index==5){
+    document.getElementById('yesBtn').style.border= "5px solid white";
+    document.getElementById('yesBtn').style.opacity = 1;
+    document.getElementById('msg').innerHTML = messages[index];
+    winflag = 1;
+  }else{
+    document.getElementById('msg').innerHTML = messages[index];
+      //index += 1;
+  }
+  index += 1;
+}
+function WeWon(){
+  document.getElementById('msg').innerHTML = "YESSSS WIFEYYYY WE WON &#129395;&#129395;&#129395;&#129395;&#129395; YOU DID ITTT YAYYYY. Thank you for keeping your trust in me &#129392;. Let's celebrate Valentine's together till death do us apart&#129392;&#129392;. Let's marry, work for our family, take care of our parents together, and let's become the best couple&#129392;&#129395;&#129395;. Happy Valentine's Dayy My Wifeyyy&#128536;&#128536;&#128536;. <b>Love You Soo muchhh&#129392;&#128536;&#128536;&#128536;</b>."
+}
+    </script>
+  </head>
+  <body>
+    <div class='container'>
+     <h2>Hey Wifeyyy...Will you be my Valentine??</h2>
+     <br/>
+     <br/>
+     <br/>
+     <button id='yesBtn' onmouseover="MoveOut()" onclick="MoveOut()">Yes</button>
+     <button id='noBtn' onclick="ShowMessage()">No</button>
+     <br>
+     <p id="msg"></p>
+     <img id='hutao' alt="hutao"/>
+    </div>
+  </body>
+</html>
