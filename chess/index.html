@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chess JS</title>
+		<link type='text/css' rel='stylesheet' href='./block.css'/>
+		<script type='text/javascript' language='javascript' src='./master.js'></script>
+	</head>
+	<body onload='InitializeBoard()'>
+		<div id='board'></div>
+		<script>
+			window.onbeforeunload = function (e) {
+				return "dont refresh";
+			}
+		</script>
+	</body>
+</html>

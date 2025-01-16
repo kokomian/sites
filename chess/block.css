@@ -1,0 +1,56 @@
+button{
+  width: 15%;
+  font-size: 1em;
+  border-radius: 6px;
+  background-color: rgba(44,102,240,0.8);
+  color: white;
+  border: solid steelblue 1px;
+}
+.box{
+  display: inline-block;
+  width: 104px;
+  height: 104px;
+  margin-right: 0.05em;
+  color: black;
+  font-size: 3.5em; /*change coin size here*/
+}
+.black {
+  background-color: rgba(90, 90, 90, 0.7);
+}
+.white{
+  background-color: white;
+  border: solid black 1px;
+}
+/* b{
+  display: block;
+  text-align: center;
+} */
+.hyphen{
+  visibility: hidden;
+}
+/* .bkr{
+  height: 2em;
+} */
+.choose{
+  width: 7.5%;
+  margin-right: 0.3em;
+}
+.btime p, .wtime p{
+  display: inline-block;
+  border: 1px solid steelblue;
+  border-radius: 6px;
+  min-width: 1em;
+  min-height: 1em;
+  padding: 0.2em;
+  background-color: rgba(70, 130, 180, 0.2);
+}
+.btime, .wtime, .mtime, .dtime{
+  display: inline;
+}
+.wtime, .mtime, dtime{
+  margin-left: 8em;
+}
+#castle{
+  background-color: white;
+  color: black;
+}
