@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MineSweeper</title>
+		<link type='text/css' rel='stylesheet' href='./block.css'/>
+		<script type='text/javascript' language='javascript' src='./app.js'></script>
+	</head>
+	<body>
+		<div id='board'>
+			<button onClick='LoadGame(10)'>10x10</button>
+			<button onClick='LoadGame(15)'>15x15</button>
+			<button onClick='LoadGame(20)'>20x20</button>
+		</div>
+		<script>
+			document.addEventListener("contextmenu", (event)=>{
+				event.preventDefault();
+			});
+			window.onbeforeunload = function (e) {
+				return "dont refresh";
+			}
+			window.contextmenu = function () {
+				console.log("disabled contextmenu");
+				return false;
+			}
+			window.onkeypress = function(e){
+				if(e.key=='d'){ //dig
+					if(mask[box_i][box_j]!=-1)
+						OpenTile(box_i, box_j);
+				} else if(e.key=='f'){ //flag
+					if(mask[box_i][box_j]==0)
+						FlagTile(box_i, box_j, 1);
+					else if(mask[box_i][box_j]==-1)
+						FlagTile(box_i, box_j, 0);
+				}
+			}
+			document.body.oncontextmenu = function(e){
+				isRightClicked = 0;
+				if("which" in e)
+					isRightClicked = e.which==3 ? 1 : 0;
+				else if("right" in e)
+					isRightClicked = e.right==2 ? 1 : 0;
+				if(isRightClicked)
+					if(mask[box_i][box_j]==0)
+						FlagTile(box_i, box_j, 1);
+					else if(mask[box_i][box_j]==-1)
+						FlagTile(box_i, box_j, 0);
+						
+
+			}
+		</script>
+	</body>
+</html>
