@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name='viewport' content="width=device-width, initial-scale=1">
+		<title>PnR</title>
+		<!--<link type='text/css' rel='stylesheet' href='./style.css'/>-->
+		<style>
+html{
+	background-color: rgba(0,255,0,0.15);
+}
+.container{
+	background-color: rgba(130,212,139,0.6);
+	padding: 1em;
+	width: 85%;
+	height: 9%;
+	border-radius: 10px;
+	padding-left: 2em;
+	border-bottom: rgba(130,212,139,0.9) solid 2px;
+	border-right: rgba(130,212,139,0.9) solid 1px;
+	margin: auto;
+}
+.container h2{
+	font-family: Monospace;
+	font-size: 2em;
+	display: inline-block;
+	width: 80%;
+}
+.container button{
+	font-size: 1.2em;
+	width: 10%;
+	height: fit-content;
+	min-height: 2em;
+	background-color: rgba(44,102,240,0.8);
+	border: steelblue 1px;
+	border-radius: 6px;
+	color: white;
+	margin-bottom: 0.5em;
+}
+.inner{
+	background-color: rgba(30,139,212,0.4);
+	padding: 0.2em;
+	border-radius: 8px;
+}
+.inner h3{
+	text-decoration: underline;
+	color: darkgreen;
+  margin-left: 0px;
+	margin-bottom: 2px;
+}
+.checks{
+	display: inline-grid;
+	width: 46%;
+	background: antiquewhite;
+	border-radius: 8px;
+	margin-top: 5px;
+  margin-right: 3px;
+	padding-left: 1em;
+}
+.checks h3{
+	text-align: center;
+}
+.hide_dot{
+	list-style: none;
+}
+span{
+	color: chartreuse;
+}
+li{
+	margin-bottom: 0.7em;
+}
+i{
+	color: blue;
+}
+textarea{
+	width: 80%;
+  font-size: 15px;
+	border-radius: 8px;
+}
+.misc{
+	text-decoration: underline;
+	margin-top: 1em;
+	margin-bottom: 2px;
+	padding-bottom: 0px;
+}
+.im1 img{
+	width: 97%;
+	margin-left: 1%;
+	border-radius: 4px;
+}
+.im1 h3{
+	margin-top:0px;
+	color: blue;
+	text-align: center;
+	margin-bottom: 2em;
+}
+.scriptBtn button{
+  width: fit-content;
+  margin: 0.3em;
+	padding-left: 0.7em;
+	padding-right: 0.7em;
+}
+#scriptwindow{
+	background-color: rgba(30,139,212,0.4);
+	width: 95%;
+	border-radius: 8px;
+	margin: auto;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding:1em;
+}
+.heading{
+	text-align: center;
+	border: solid 1px black;
+	border-radius: 8px;
+	width: 70%;
+	margin: auto;
+	font-size: 1.1rem;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	text-decoration: underline green 2px;
+	font-family: monospace;
+}
+.heading h2{
+	font-size: 0.9em;
+	text-align: right;
+	margin-right: 4em;
+}
+		</style>
+	</head>
+	<body>
+	<div class='heading'>
+		<h1>Place & Route Flow</h1>
+		<h2><i>-using ICC2</i></h2>
+	</div>
+	<div class='container' id='cpnr1'>
+		<div>
+			<h2>Design Import & Export</h2>
+			<button onClick="toggler(pnr1,this,'cpnr1')">open</button>
+		</div>
+		<div class='inner' id='pnr1' hidden='true'>
+			<ul>
+				<li><b>set</b> search_path {. /home/pdgtrg/rpu_mpe_top_mi_dma_top_2/INPUTS/}</li>
+				<li><b>set_host_options</b> <i>-max_cores</i> 8 <span>;#multi threading for supported commands like place_opt, route</span></li>
+				<h4><font color='darkblue'>Creating Library with required technology files and refernce libraries :</font></h4>
+				<li><b>create_lib</b> Block_Design <i>-technology</i> tsmcn28_9M_6X2ZRDL_HVH.tf <i>-ref_libs</i> {tcbn28hpcplusbwp7t30p140svt.ndm tsmc28hpcpuhddpsram128x128svt4m.ndm}</li><br/>
+				<h4><font color='darkblue'>Importing Design into ICC2 :</font></h4>
+				<li><b>read_verilog</b> ImportPnRVerilog.v.gz</li>
+				<li><b>read_def</b> FP_20RUF.def.gz</li>
+				<li><b>open_block</b> filename.ndm/:block_name</li><br/>
+				<h4><font color='darkblue'>Exporting Design :</font></h4>
+				<li><b>write_verilog</b> <i>-compress</i> gzip filename.v.gz</li>
+				<li><b>write_def</b> <i>-compress</i> gzip <i>-routed_nets</i> filename.def.gz</li>
+				<li><b>save_lib</b> <i>-compress</i> as filename.ndm</li>
+			</ul>
+		</div>
+	</div>
+	<div class='container' id='cpnr2'>
+		<div>
+			<h2>FloorPlan</h2>
+			<button onClick="toggler(pnr2,this,'cpnr2')">open</button>
+		</div>
+		<div class='inner' id='pnr2' hidden='true'>
+			<ul>
+				<h3>Goals of Floor Plan :</h3>
+				<ul>
+					<li>Floor Plan is the first step in PNR flow where we Calculating core area,Positioning macros on the core area and hence define the continuous area for placing the standard cells.</li>
+					<li>Macros should be placed in such a way that it should decrease timing critical paths between macros and interfacing logic (Macro Placement Constraints).</li>
+				</ul>
+				<li>Import the design with all the required files,libraries and perform required Pre-Checks.</li>
+				<li>Die-size calculations</li>
+				<li><b>initialize_floorplan</b> <i>-control_type</i> core <i>-core_offset</i> 1 <i>-side_length</i> {423.41 423.41} <i>-site_def</i> unit</li>
+				<button onclick="imgtoggle(img6, this)" style='width:15%'>show images</button>
+				<div class='im1' id='img6' hidden='true'>
+					<img src="./img/fp_01.png" alt="floorplan initialized"/>
+					<h3>Floorplan Initialized</h3>
+				</div>
+				<li><b>create_keepout_margin</b> <i>-type</i> hard <i>-outer</i> {5 5 5 5} [<b>get_flat_cells</b> <i>-hierarchical -filter</i> "is_hard_macro==true"]</li>
+				<button onclick="imgtoggle(img7, this)" style='width:15%'>show images</button>
+				<div class='im1' id='img7' hidden='true'>
+					<img src="./img/fp_02.png" alt="Halo around Macro"/>
+					<h3>Halo Around Macro</h3>
+				</div>
+				<li>Place the macro inside the core area based on the net connections.</li>
+				<button onclick="imgtoggle(img20, this)" style='width:15%'>show images</button>				
+				<div class='im1' id='img20' hidden='true'>
+					<img src="./img/fp_03.png" alt="Macros placed into core area"/>
+					<h3>Macros placed inside core area</h3>
+				</div>				
+				<li>
+					<h3>Placement Blockages</h3>
+					<ol>
+						<li><b>create_placement_blockage</b> <i>-name</i> Hardblocking <i>-type</i> hard <i>-boundary</i> {{1 1} {20 20}}</li>
+						<li><b>create_placement_blockage</b> <i>-name</i> MacroChannel1 <i>-type</i> soft <i>-boundary</i> {{65.42 49} {80.2 376.675}}</li>
+						<li><b>create_placement_blockage</b> <i>-name</i> MacroPins1 <i>-type</i> partial <i>-blocked_percentage</i> 70 <i>-boundary</i> {{144.575 49} {150.575 376.675}}</li>
+					</ol>
+				</li>
+				<li>
+					<h3>Move bounds (Guide,Region,Fence)</h3>
+					<ol>
+						<li><b>create_bound</b> <i>-name</i> HardBound1 <i>type</i> hard <i>-boundary</i> {{200 200} {220 220}} [<b>get_flat_cells</b> U_AXI_RAMX/u_axi_gs_top/*]</li>
+						<li><b>create_bound</b> <i>-name</i> HardBound2 <i>type</i> soft <i>-boundary</i> {{200 200} {220 220}} [<b>get_flat_cells</b> U_AXI_RAMX/u_axi_gs_top/*]</li>
+						<li><b>create_bound</b> <i>-name</i> HardBound3 exclusive <i>-boundary</i> {{200 200} {220 220}} [<b>get_flat_cells</b> U_AXI_RAMX/u_axi_gs_top/*]</li>
+					</ol>
+				</li>
+				<li>
+					<h3>Group bounds (cell grouping)</h3>
+					<ul style="list-style:none">
+						<b>group_cells</b> <i>-module_name</i> My_GroupBound1core <i>-cell_name</i> dma_core [<b>get_cells</b> U_mi_dma_core_if/*]
+					</ul>
+				</li>
+				<li><b>read_pin_constraints</b> <i>-filename</i> ~/files/io.pins</li>
+				<li><b>place_pins</b> <i>-self</i></li>
+				<li><b>sizeof_collection [get_site_rows]</b></li>
+				<button onclick="imgtoggle(img5, this)" style='width:15%;display:block'>show images</button>
+				<div class='im1' id='img5' hidden='true'>
+					<img src="./img/fp_final.png" alt="final floorplan data"/>
+					<h3>Final Floorplan</h3>
+				</div>
+				<div class='checks'>
+					<h3>Pre-Checks n Reports</h3>
+					<ul>
+						<li><b>check_netlist</b></li>
+						<li><b>check_timing</b></li>
+						<li><b>check_design</b> <i>-checks</i> {pre_placement_stage}</li>
+						<li><b>report_timing</b> <i>-groups</i> R2R <i>-delay_type</i> min <i>-scenarios</i> SS1</li>
+						<li><b>report_global_timing</b></li>
+						<li><b>report_qor</b> [<i>-summary</i>]</li>
+						<li><b>report_design</b></li>
+					</ul>
+				</div>
+				<div class='checks'>
+					<h3>Post-Checks n Reports</h3>
+					<ul>
+						<li><b>check_pin_placement</b></li>
+						<li><b>report_utilization</b></li>
+						<li>report_timing <i>-groups</i> R2R <i>-delay_type</i> min <i>-scenarios</i> SS1</li>
+						<li>report_global_timing</li>
+						<li>report_qor [<i>-summary</i>]</li>
+						<li>report_design</li>
+					</ul>
+				</div>
+				<li><h3>Miscellaneous</h3></li>
+				<ol>
+					<li><b>create_utilization_configuration</b> My_Config <i>-scope</i> block <i>-capacity</i> core <i>-exclude</i> {hard_blockages soft_blockages}</li>
+					<li><b>report_utilization</b> <i>-config</i> My_Config</li>
+				</ol>
+			</ul>
+		</div>
+	</div>
+	<div class='container' id='cpnr3'>
+		<div>
+			<h2>PowerPlan</h2>
+			<button onclick="toggler(pnr3,this,'cpnr3')">open</button>
+		</div>
+		<div class='inner' id='pnr3' hidden='true'>
+			<ul>
+				<h3>Goals of Power Plan :</h3>
+				<ul>
+					<li>In the power plan stage we build power network so that all the macros and Std. cells will get sufficient power to operate properly.(IR drop should be within the limits)</li>
+				</ul>
+				<li><b>Design Import and Pre-Checks :</b></li>
+					<ul>
+						<li>Create library with all required files</li>
+						<li>Import the floor plan database</li>
+						<li>Perform the necessary Pre-Checks and generate appropriate reports</li>
+					</ul>
+				<li><b>create_port</b> VDD <i>-port_type</i> power</li>
+				<li><b>create_port</b> VSS <i>-port_type</i> ground</li>
+				<li><b>create_net</b> <i>-power</i> VDD</li>
+				<li><b>create_net</b> <i>-ground</i> VSS</li>
+				<li><b>connect_pg_net</b> <i>-net</i> VDD [<b>list</b> [<b>get_ports</b> VDD] [<b>get_pins</b> <i>-physical_context</i> */VDD]]</li>
+				<li><b>connect_pg_net</b> <i>-net</i> VSS [<b>list</b> [<b>get_ports</b> VSS] [<b>get_pins</b> <i>-physical_context</i> */VSS]]</li>
+				<li>
+					<h3>Global Mesh n PG pins</h3>
+					<ol>
+						<li><b>create_pg_mesh_pattern</b> GLOBAL_MESH_PATTERN <i>-layers</i> {{{vertical_layer: M8}{width: 0.4}{spacing: 0.4}{offset: 0.2}{pitch: 6.4}{trim: true}} {{horizontal_layer: M9}{width: 0.4}{spacing: 0.4}{offset: 0.2}{pitch: 6.4}{trim: true}}}</li>
+						<li><b>set_pg_strategy</b> GLOBALMESH_PGPIN_STRATEGY <i>-core -pattern</i> {{name: GLOBAL_MESH_PATTERN}{nets: {VDD VSS}}} -extension {{nets: {VDD VSS}}{stop: design_boundary_and_generate_pin}}</li>
+						<li><b>compile_pg</b> <i>-strategies</i> GLOBALMESH_PGPIN_STRATEGY</li>
+					</ol>
+					<button onclick="imgtoggle(img1, this)" style='width:15%'>show images</button>
+					<div class='im1' id='img1' hidden='true'>
+						<img src="./img/pp_01.png" alt="global mesh"/>
+						<h3>Global Mesh</h3>
+					</div>
+				</li>
+			<li>Routing blockages on macros (M4)</li>
+			<li>
+				<h3>Local Mesh</h3>
+				<ol>
+					<li><b>create_pg_mesh_pattern</b> LOCAL_MESH_PATTERN <i>-layers</i> {{vertical_layer: M4}{width: 0.2}{spacing: 0.6}{pitch: 6.4}{offset: 0.2}}</li>
+					<li><b>set_pg_strategy</b> LOCAL_MESH_STRATEGY <i>-core -pattern</i> {{name: LOCAL_MESH_PATTERN}{nets: {VDD VSS}}</li>
+					<li><b>compile_pg</b> <i>-strategies</i> LOCAL_MESH_STRATEGY</li>
+					<p>creating local mesh in areas left out by local-mesh strategy by using pg-straps</p>
+					<li><b>create_pg_strap</b> <i>-layer</i> M4 <i>-direction</i> vertical <i>-width</i> 0.2 <i>-net</i> VDD <i>-start</i> 1.2 <i>-stop</i> 59 <i>-pitch</i> 6.4</li>
+					<li><b>create_pg_strap</b> <i>-layer</i> M4 <i>-direction</i> vertical <i>-width</i> 0.2 <i>-net</i> VSS <i>-start</i> 2 <i>-stop</i> 53.4 <i>-pitch</i> 6.4</li>
+				</ol>
+				<button onclick="imgtoggle(img2, this)" style='width:15%'>show images</button>
+				<div class='im1' id='img2' hidden='true'>
+					<img src="./img/pp_02.png" alt="local mesh"/>
+					<h3>Local Mesh</h3>
+				</div>
+			</li>
+			<li>Routing blockages in M1 layer in macro bbox to avoid followpins inside macro halos</li>
+			<li><b>create_routing_blockage</b> <i>-layer</i> M5 <i>-boundary</i> [<b>get_attribute</b> [<b>current_block</b>] <i>-name</i> bbox]<br/>(routing blockage on the layer above LocalMesh in local mesh area to avoid stacked vias from followpins-to-globalmesh)</li>
+			<li>
+				<h3>Follow Pins</h3>
+				<ol>
+					<li><b>create_pg_std_cell_conn_pattern</b> STDCELL_PATTERN <i>-check_std_cell_drc</i> false <i>-mark_as_follow_pin</i> true</li>
+					<li><b>set_pg_strategy</b> STDCELL_STRATEGY <i>-core -pattern</i> {{name: STDCELL_PATTERN}{nets: {VDD VSS}}}</li>
+					<li><b>compile_pg</b> <i>-strategies</i> STDCELL_STRATEGY</li>
+				</ol>
+				<button onclick="imgtoggle(img3, this)" style='width:15%'>show images</button>
+				<div class='im1' id='img3' hidden='true'>
+					<img src="./img/pp_03.png" alt="follow pins"/>
+					<h3>Follow pins</h3>
+				</div>
+			</li>
+			<li><b>set</b> AntCell [<b>get_lib_cells</b> *ANTENNA*]</li>
+			<li><b>create_boundary_cells</b> <i>-prefix</i> ENDCAP <i>-top_boundary_cells</i> $AntCell <i>-bottom_boundary_cells</i> $AntCell <i>-left_boundary_cell</i> $AntCell <i>-right_boundary_cell</i> $AntCell <i>-top_left_inside_corner_cells</i> $AntCell <i>-top_left_outside_corner_cell</i> $AntCell <i>-bottom_left_inside_corner_cells</i> $AntCell <i>-bottom_left_outside_corner_cell</i> $AntCell <i>-top_right_inside_corner_cells</i> $AntCell <i>-top_right_outside_corner_cell</i>  $AntCell <i>-bottom_right_inside_corner_cells</i>  $AntCell <i>-bottom_right_outside_corner_cell</i> $AntCell</li>
+			<button onclick="imgtoggle(img4, this)" style='width:15%;display:block'>show images</button>
+			<div class='im1' id='img4' hidden='true'>
+				<img src="./img/pp_04.png" alt="final power plan with boundary cells"/>
+				<h3>Boundary cells</h3>
+			</div>
+			<li><b>remove_routing_blockages</b> *</li>
+
+			<div class='checks'>
+				<h3>Pre-Checks n Reports</h3>
+					<li>Check wheather all the macros placed inside the core area.</li>
+					<li><b>report_utilization</b></li>
+			</div>
+			<div class='checks'>
+				<h3>Post-Checks n Reports</h3>
+				<ul>
+					<li><b>check_pg_connectivity</b></li>
+					<li><b>check_pg_drc</b></li>
+					<li><b>check_pg_missing_vias</b></li>
+				</ul>
+			</div>
+			</ul>
+		</div>
+	</div>
+	<div class='container' id='cpnr4'>
+		<div>
+			<h2>Placement</h2>
+			<button onclick="toggler(pnr4,this,'cpnr4')">open</button>
+		</div>
+		<div class='inner' id='pnr4' hidden='true'>
+			<ul>
+				<h3>Goals of Placement :</h3>
+				<ul>
+					<li>In Placement stage we will place standard cells legally in the standard cell rows created in floor plan stage.</li>
+					<li>Placement should be done in such a way that it leave enough space for adding new cells or upsizing existing cells in future and routing nets while satisfying all the timing and routing constraints.</li>
+				</ul>
+				<h3>Steps followed in the placement :</h3>
+				<ul>
+					<li>S1 : Create library,Read the Power Plan database, Perform necessary checks and Clean Violations if any found.</li>
+					<li>S2 : Fix macros and ports.</li>
+					<li>S3 : Assign Metal layer Routing directions.</li>
+					<li>S4 : Grep the cells that are not used during placement.</li>
+					<li>S5 : Add Tap cells.</li>
+					<li>S6 : Set Design Rule Constraints.</li>
+					<li>S7 : Set required Application options</li>
+					<li>S8 : Perform placement,legalize the placement and optimization.</li>
+					<li>S9 : Perform appropriate checks and generate appropriate reports.</li>
+					<li>S10 : Try to reduce the violations by choosing suitable techniques.</li>
+				</ul>
+				<li><b>Design Import and Pre-Checks :-</b>
+					<ul>
+						<li> Create library </li>
+						<li> Read the power plan database </li>
+						<li> Perform required Pre-checks and generate appropriate reports </li>
+						<li> Clean the violations if any found </li>
+						<li> Create timing environment </li>
+					</ul>
+				</li>
+				<li><h3>Tap cells</h3></li>
+				<ol style='list-style:none'>
+					<li><b>create_tap_cells</b> <i>-lib_cell</i> [<b>get_lib_cells</b> */*TAP*] <i>-distance</i> 45 <i>-prefix</i> WELL_TAP <i>-pattern</i> stagger <i>-skip_fixed_cells</i></li>
+					<li class='hide_dot'><b>connect_pg_net</b> <i>-net</i> VDD [<b>get_pins</b> <i>-physical_context</i> *WELL_TAP*/VDD]</li>
+					<li class='hide_dot'><b>connect_pg_net</b> <i>-net</i> VSS [<b>get_pins</b> <i>-physical_context</i> *WELL_TAP*/VSS]</li>
+				</ol>
+				<li><b>set_fixed_objects</b> [<b>get_flat_cells</b> <i>-filter</i> "is_hard_macro==true"]</li>
+				<li class='hide_dot'><b>set_fixed_objects</b> [<b>get_ports</b>]</li>
+				<li><h3>Metal routing directions</h3></li>
+				<ol style='list-style:none'>
+					<li><b>set_attribute</b> <i>-objects</i> [<b>get_layers</b> {M1 M3 M5 M7 M9}] <i>-name</i> routing_direction <i>-value</i> horizontal</li>
+					<li class='hide_dot'><b>set_attribute</b> <i>-objects</i> [<b>get_layers</b> {M2 M4 M6 M8 AP}] <i>-name</i> routing_direction <i>-value</i> vertical</li>
+				</ol>
+				<li><b>set</b> dont_use_list [<b>get_lib_cells</b> {*/*CK* *D0* *D16* *D20*}]</li>
+				<li class='hide_dot'><b>set_lib_cell_purpose</b> <i>-include</i> none $dont_use_list</li>
+				<li><h3>App options:</h3></li>
+				<li class='hide_dot'><textarea style='height:20em'>set ScanChain [check_scan_chain]
+if {ScanChain == ""} {
+	set_app_options -list {place.coarse.continue_on_missing_scandef {true}}	;#since scan chain is not defined in inputs
+}set_app_options -list { \
+	place.legalize.enable_advanced_legalizer {true} \
+	opt.common.user_instance_name_prefix {PLACE_OPT} \
+	place.common.pnet_aware_layers {M8} \
+	place.common.pnet_aware_density {0} \
+	place.common.pnet_aware_min_width {0.4} \
+	opt.common.max_fanout {16} \
+	opt.tie_cell.max_fanout {8} \
+	place_opt.flow.clock_aware_placement {true} \
+	opt.buffering.enable_rebuffering {true} \
+	opt.common.drc_mode_buffering {true} \
+}</textarea></li>
+		<li><h3>Design Rule Constraints</h3></li>
+			<ol style='list-style:none'>
+				<li><b>set_max_transition</b> 0.08 [<b>current_design</b>] <i>-scenarios</i> {SS FF}</li>
+				<li><b>set_max_capacitance</b> 50 [<b>current_design</b>] <i>-scenarios</i> {SS FF}</li>
+			</ol>
+			<button onclick="imgtoggle(img8, this)" style='width:15%'>show images</button>
+			<div class='im1' id='img8' hidden='true'>
+				<img src="./img/place_01.png" alt="Cells outside core area"/>
+				<h3>Unplaced design</h3>
+			</div>
+			<li><b>create_placement</b> <i>-timing_driven</i></li>
+			<button onclick="imgtoggle(img9, this)" style='width:15%'>show images</button>
+			<div class='im1' id='img9' hidden='true'>
+				<img src="./img/place_02.png" alt="cells placed without legalization"/>
+				<h3>Cells placed without having legal positions</h3>
+			</div>
+			<li><b>legalize_placement</b></li>
+			<button onclick="imgtoggle(img10, this)" style='width:15%'>show images</button>
+			<div class='im1' id='img10' hidden='true'>
+				<img src="./img/place_03.png" alt="cells legalized"/>
+				<h3>Cells legalized into std cell rows</h3>
+			</div>
+			<li><b>place_opt</b> <i>-from</i> final_opto</li>
+			<div class='checks'>
+				<h3>Pre-Checks n Reports</h3>
+				<ul>
+					<li><b>check_pg_connectivity</b></li>
+					<li><b>check_pg_drc</b></li>
+					<li><b>check_pg_missing_vias</b></li>
+					<li><b>check_design</b> <i>-checks</i> {pre_placement_stage}</li>
+					<li><b>report_utilization</b></li>
+					<li><b>report_design</b></li>
+					<li><b>report_timing</b> (or) <b>report_global_timing</b></li>
+				</ul>
+			</div>
+			<div class='checks'>
+				<h3>Post-Checks n Reports</h3>
+				<ul>
+					<li><b>check_legality</b></li>
+					<li><b>report_utilization</b> [<i>-config</i> My_Config]</li>
+					<li>Observe cell density ,pin density ,global route congestion maps on GUI</li>
+					<li><b>report_congestion</b></li>
+					<li><b>report_constraints</b> <i>-all_violators -scenarios</i> {SS FF} <i>-max_transition/max_capacitance</i></li>
+					<li><b>report_timing</b> [<i>-groups</i> {I2O R2R R2O I2R} <i>-scenarios</i> {SS/FF} <i>-delay_type</i> min/max]</li>
+					<li><b>report_qor</b></li>
+					<li><b>report_global_timing</b></li>
+					<li><b>report_power</b> <i>-scenarios</i> [<b>get_scenarios</b>]</li>
+					<li>report_dont_touch -all</li>
+					<li>report_design -all</li>
+					<li>check_bufferability -nets</li>
+					<li>check_pg_connectivity, drc</li>
+				</ul>
+			</div>
+			<button onclick="imgtoggle(img11, this)" style='width:15%'>show images</button>
+			<button onclick="imgtoggle(img12, this)" style='width:15%'>show images</button>
+			<div class='im1' id='img11' hidden='true'>
+				<img src="./img/cell_den.png" alt="cell density map"/>
+				<h3>Cell Density map</h3>
+			</div>
+			<div class='im1' id='img12' hidden='true'>
+				<img src="./img/pin_den.png" alt="pin density map"/>
+				<h3>Pin Density map</h3>
+			</div>
+			<li><h3>Miscellaneous</h3></li>
+			<ul>
+				<li class='misc'>Weights to path groups</li>
+				<li class='hide_dot'><b>group_path</b> <i>-name</i> R2R <i>-weight</i> 10</li>
+				<li class='hide_dot'><b>group_path</b> <i>-name</i> R2O <i>-weight</i> 2</li>
+				<li class='hide_dot'><b>group_path</b> <i>-name</i> I2R <i>-weight</i> 2</li>
+				<li class='hide_dot'><b>group_path</b> <i>-name</i> I2O <i>-weight</i> 2</li>
+				<li class='misc'>Cell padding</li>
+				<li class='hide_dot'><b>set</b> spacing_cells [<b>get_lib_cells</b> <i>-filter</i> "number_of_pins>5"]</li>
+				<li class='hide_dot'><b>set_placement_spacing_label</b> <i>-name</i> AOIOAI_spacing <i>-side</i> both <i>-lib_cells</i> $spacing_cells</li>
+				<li class='hide_dot'><b>set_placement_spacing_rule</b> <i>-labels</i> {AOIOAI_spacing AOIOAI_spacing} {0 2}</li>
+				<li class='misc'>Module padding</li>
+				<li class='hide_dot'><b>create_keepout_margin</b> <i>-outer</i> {2 0 2 0} [<b>get_flat_cells</b> U_mi_dma_fifo_if/*]</li>
+				<li class='misc'>Magnet placement</li>
+				<li class='hide_dot'><b>set</b> magnet_cells [<b>magnet_placement</b> <i>-logical_levels</i> 1 <i>-exclude_buffers -mark_fixed -get_collection</i> [<b>get_cells</b> {U0_SDRAM128X128/U_sdpram_128x128/U0 U1_SDRAM128X128/U_sdpram_128x128/U0 U2_SDRAM128X128/U_sdpram_128x128/U0 U3_SDRAM128X128/U_sdpram_128x128/U0}]]</li>
+				<li class='misc'>Rebuilding Buffer trees(pre-route stage)<br/></li>
+				<li class='hide_dot'><b>set_lib_cell_purpose</b> <i>-include</i> none [<b>get_lib_cells</b>]</li>
+				<li class='hide_dot'><b>set</b> bufferList [<b>get_cells</b> *BUF*]</li>
+				<li class='hide_dot'><b>set_lib_cell_purpose</b> <i>-include</i> optimization $bufferList</li>
+				<li class='hide_dot'><b>create_buffer_trees</b> <i>-global_route_based</i></li>
+				<li class='hide_dot'><b>legalize_placement</b> <i>-incremental</i></li>
+				<li class='misc'>Tiecell optimization:</li>
+				<li class='hide_dot'><b>add_tie_cells</b> <span>;#re-adds tie cells</span></li>
+				<li class='misc'>Spare cells:</li>
+				<li class='hide_dot'><b>add_spare_cells</b> <i>-cell_name</i> My_Spares <i>-lib_cell</i> */ND2ND4* <i>-num_instances</i> 20</li>
+				<li class='hide_dot'><b>place_eco_cells</b> <i>-legalize_only</i> -cells [eco cells]</li>
+			</ul>
+			</ul>
+		</div>
+	</div>
+	<div class='container' id='cpnr5'>
+		<div>
+			<h2>CTS</h2>
+			<button onclick="toggler(pnr5,this,'cpnr5')">open</button>
+		</div>
+		<div class='inner' id='pnr5' hidden='true'> <!--hidden-->
+				<ul>
+					<h3>Goals of CTS :</h3>
+					<ul>
+						<li>Every flop in the design should get clock.</li>
+						<li>Clock Tree should be build with minimum insertion delay and minimum local skew.</li>
+						<li>Clock Tree can be build by using Non-Default rules to reduce crosstalk issues.</li>
+					</ul>
+					<h3>Steps followed during Clock Tree Synthesis :</h3>
+					<ul>
+						<li>S1 : Create library,load placement database,perform necessary checks and clean violations if any found.</li>
+						<li>S2 : Grep required cells and building clock tree assign spacing b/w clock cells.</li>
+						<li>S3 : Assign Metal layer Routing directions.</li>
+						<li>S4 : Create and set Metal layer routing rules.</li>
+						<li>S5 : Set Design Rule Constraints and target skew.</li>
+						<li>S6 : Set target skew.</li>
+						<li>S7 : Set application options.</li>
+						<li>S8 : Build clock tree,route clock tree and perform clock tree optimization.</li>
+						<li>S9 : Perform necessary checks and generate appropriate reports.</li>
+						<li>S10 : Try to reduce violations by suitable optimization techniques.</li>
+					</ul>
+					<li><b>Design Import:-</b></li>
+						<ul>
+							<li> Create library </li>
+							<li> Read the placement database </li>
+							<li> Perform required checks and generate appropriate reports </li>
+							<li> Clean the violations if any found </li>
+							<li> Create timing environment </li>
+						</ul>
+				<li>
+					<h3>CT references</h3>
+					<ol>
+						<li><b>set ck_cells </b>[<b>get_lib_cells </b>{*CKND4BWP* *CKND6BWP* *CKND8BWP* *CKND12BWP* *CKBD4BWP* *CKBD6BWP* *CKBD8BWP* *CKBD12BWP*}]</li>
+						<li><b>set_lib_cell_purpose </b><i> -exclude </i>cts [<b>get_lib_cells</b>]</li>
+						<li><b>set_lib_cell_purpose </b><i> -include </i>cts $ck_cells</li>
+						<li><b>set_dont_touch </b>$ck_cells false</li>
+					</ol>
+				</li>
+				<li>
+					<h3>CT target skew and latency</h3>
+					<ul><li class='hide_dot'><b>set_clock_tree_options </b><i> -target_skew </i>0.07 <i> -corners </i>{ss ff}<i> -clocks </i>{aclk}</li></ul>
+				</li>
+				<li>
+					<h3>Design Rule Constraints</h3>
+					<ol>
+						<li><b>set_max_transition</b> 0.08<i> -clock_path </i>[<b>all_clocks</b>]<i> -scenarios </i>{SS FF}</li>
+						<li><b>set_max_capacitance</b>  50<i> -clock_path </i>[<b>all_clocks</b>]<i> -scenarios </i>{SS FF}</li>
+					</ol>
+				</li>
+				<li>
+					<h3>Routing directions and rules</h3>
+					<ol>
+						<li><b>set_attribute</b><i> -objects </i>[<b>get_layers</b> {M1 M3 M5 M7 M9}]<i> -name </i>routing_direction<i> -value </i>horizontal</li>
+						<li><b>set_attribute</b><i> -objects </i>[<b>get_layers</b> {M2 M4 M6 M8 AP}]<i> -name </i>routing_direction<i> -value </i>vertical</li>
+						<li><b>create_routing_rule</b> Wx2_Sx2<i> -multiplier_width </i>2<i> -multiplier_spacing </i>2</li>
+						<li><b>create_routing_rule</b> Wx1_Sx2<i> -multiplier_spacing </i>2</li>
+						<li><b>set_clock_routing_rules</b><i> -rules </i>Wx2_Sx2<i> -net_type </i>root<i> -clocks </i>[<b>all_clocks</b>] <i>-max_routing_layer </i>M7<i> -min_routing_layer </i>M6</li>
+						<li><b>set_clock_routing_rules</b><i> -rules </i>Wx2_Sx2<i> -net_type </i>internal<i> -clocks </i>[<b>all_clocks</b>]<i> -max_routing_layer </i>M7<i> -min_routing_layer </i>M6</li>
+						<li><b>set_clock_routing_rules</b><i> -rules </i>Wx2_Sx2<i> -net_type </i>sink<i> -clocks </i>[<b>all_clocks</b>]<i> -max_routing_layer </i>M5<i> -min_routing_layer </i>M4</li>
+					</ol>
+				</li>
+				<li><b>set_clock_cell_spacing</b><i> -lib_cells </i>$ck_cells <i>-x_spacing</i> 2 <i>-y_spacing</i> 2 <i>-clocks</i> [<b>all_clocks</b>]</li>
+				<li><h3>App options</h3></li>
+				<li class='hide_dot'><textarea style='height:14em'>set_app_options -list {\
+	place.coarse.continue_on_missing_scandef {true} \
+	place.legalize.enable_advanced_legalizer {true} \
+	opt.common.user_instance_name_prefix {CLOCK_OPT_} \
+	cts.common.user_instance_name_prefix {CTS_} \
+	cts.common.max_net_length {100} \
+	cts.common.max_fanout {12} \
+	opt.common.max_fanout {12} \
+	opt.tie_cell.max_fanout {8} \
+	clock_opt.flow.optimize_ndr {true} \
+}</textarea></li>
+				<li><b>report_clock_settings</b> <span>;#review all the options before performing cts</span></li>
+				<li>
+					<h3>Clock Tree Synthesis and Its Optimization</h3>
+					<ol class='hide_dot'>
+						<li><b>clock_opt</b> <i>-from</i> build_clock <i>-to</i> route_clock</li>
+						<li><b>mark_clock_trees</b> <i>-fix_sinks</i></li>
+						<li><b>set_propagated_clock [all_clocks]</b></li>
+						<li><b>clock_opt</b> <i>-from</i> final_opto</li>
+					</ol>
+				</li>
+				<button onclick="imgtoggle(img13, this)" style='width:15%'>show images</button>
+				<button onclick="imgtoggle(img14, this)" style='width:15%'>show images</button><br/>
+				<div class='im1' id='img13' hidden='true'>
+					<img src="./img/cts.png" alt="clock tree"/>
+					<h3>Clock Tree (binary tree)</h3>
+				</div>
+				<div class='im1' id='img14' hidden='true'>
+					<img src="./img/cts_opt.png" alt="clock tree opt"/>
+					<h3>Clock Tree after clock_opt -from final_opto(binary tree)</h3>
+				</div>
+				<div class='checks'>
+					<h3>Pre Checks n Reports</h3>
+					<ul>
+						<li><b>check_legality</b></li>
+						<li><b>check_design</b> <i>-checks</i> {pre_clock_tree_stage}</li>
+						<li>check_pg_connectivity, drc, missing_vias</li>
+						<li><b>report_utilization</b></li>
+					</ul>
+				</div>
+				<div class='checks'>
+					<h3>Post Checks n Reports</h3>
+					<ul>
+						<li><b>check_clock_trees</b></li>
+						<li>Observe cell density, pin density, global route congestion maps on GUI</li>
+						<li><b>report_clock_timing</b> <i>-type</i> [skew/latency/summary...] <i>-scenarios</i> [<b>get_scenarios</b>]</li>
+						<li><b>report_clock_qor</b> <i>-histogram_type</i> [local_skew/latency/capacitance/transition/fanout/level]</li>
+						<li><b>report_clock_power</b> <i>-type</i> [per_segment/per_subtree] <i>-scenarios</i> [<b>get_scenarios</b>]</li>
+						<li><b>report_ccd_timing</b></li>
+						<li><b>report_constraints</b></li>
+						<li><b>report_timing / report_global_timing</b></li>
+						<li><b>report_design</b></li>
+						<li><b>report_utilization</b></li>
+					</ul>
+				</div>
+				<li>
+					<h3>Miscellaneous-HTree</h3>
+					<ol>
+						<li><b>set</b> ck_buffers [<b>get_lib_cells</b> {*CKBD4BWP* *CKBD6BWP* *CKBD8BWP* *CKBD12BWP*}]</li>
+						<li><b>set</b> ck_inverters [<b>get_lib_cells</b> {*CKND4BWP* *CKND6BWP* *CKND8BWP* *CKND12BWP*}]</li>
+						<li><b>set_clock_routing_rules</b> <i>-max_routing_layer</i> M7 <i>-min_routing_layer</i> M4 <i>-rules</i> Wx2_Sx2 <i>-nets</i> {aclk}</li>
+						<li><b>set_regular_multisource_clock_tree_options</b> <i>-clock</i> [<b>all_clocks</b>] <i>-topology</i> htree_only <i>-tap_lib_cells</i> $ck_buffers <i>-htree_lib_cells</i> $ck_inverters  <i>-htree_layers</i> {M7 M6} <i>-htree_routing_rule</i> Wx2_Sx2 <i>-tap_boxes</i> {20 10} <i>-tap_boundary</i> {{116 2.5} {304 419}} <i>-prefix</i> HTREE</li>
+						<li><b>synthesize_regular_multisource_clock_trees</b></li>
+						<li class='misc'>Tap assignment</li>
+						<span># Tasks->CT->Analysis->CT analysis window->select the clock->view->levelized ct graph->Beyond exception</span><br>
+						<span># select the buffer at a required level, level just before CG cells => all CK cells at that level gets selected in the design </span><br>
+						<li><b>set</b> ClockTaps [<b>get_selection</b>]</li>
+						<li><b>set</b> ClockTapsOutPins [<b>get_pins</b> <i>-physical_context</i> <i>-of_objects</i> $ClockTaps <i>-filter</i> "direction==out"]</li>
+						<li><b>set_multisource_clock_tap_options</b> <i>-clock</i> [<b>all_clocks</b>] <i>-driver_objects</i> $ClockTapsOutPins <i>-num_taps</i> [<b>sizeof_collection</b> $ClockTapsOutPins]</li>
+						<li><b>synthesize_multisource_clock_taps</b></li>
+						<li class='misc'>Review Clock Settings</li>
+						<ul>
+							<li><b>report_clock_settings</b></li>
+							<li><b>report_clock_tree_options</b></li>
+						</ul>
+						<li class='misc'> Clock Tree Synthesis and Optimization</li>
+						<ul>
+							<li><b>clock_opt</b> <i>-from</i> build_clock <i>-to</i> route_clock
+							<li><b>mark_clock_trees</b> <i>-fix_sinks</i></li>
+							<li><b>set_fixed_objects</b> [<b>get_cells</b> <i>-hierarchical -filter</i> "is_integrated_clock_gating_cell==true"] <span>;#to fix ICG cells which are part of CT</span> </li>
+							<li><b>set_propagated_clock</b> [<b>all_clocks</b>] <span>;#optional since it is marked as propagated during synthesis </span> </li>
+							<li><b>clock_opt</b> <i>-from</i> final_opto</li>
+						</ul>
+	
+					</ol>
+				</li>
+				<li>
+					<h3>Miscellaneous</h3>
+					<ol>
+						<span># Adding Buffers to solve Tran violations</span>
+						<li><b>change_selection</b> [<b>get_nets</b> {}]</li>
+						<li><b>add_buffer</b> [<b>get_nets</b> {}]</li>
+						<p>In GUI : change_selection --> Create schematic of selected objects --> Select net and ECO --> Add buffer/remove buffer</p>
+					</ol>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+	<div class='container' id='cpnr6'>
+		<div>
+			<h2>Routing</h2>
+			<button onclick="toggler(pnr6,this,'cpnr6')">open</button>
+		</div>
+		<div class='inner' id='pnr6' hidden='true'>
+			<ul>
+				<li><h3>Goals of routing:</h3></li>
+				<ul>
+					<li>Route all the signal nets while satisfying timing and manufacturing DRC rules</li>
+					<li>shielding necessary nets such as clock nets</li>
+				</ul>
+				<li>
+					<h3>CTS checks</h3>
+					<ol>
+						<li><span>#mark_clock_trees -fix_sinks</span></li>
+						<li><span>#set_propagated_clock [all_clocks]</li></span>
+						<li><span>#set_clock_uncertainity 0.1 -scenarios [get_scenarios] [all_clocks]</li></span>
+						<li><span>#set_input_delay -clock [all_clocks] [expr 0.6 + 0.45] [get_ports [remove_from_collection [all_inputs] [get_ports aclk]]]</li></span>
+						<li><span>#set_output_delay -clock [all_clocks] [expr 0.6 - 0.45] [get_ports all_outputs]</li></span>
+
+					</ol>
+				</li>
+				<li>
+					<h3>Routing Constraints</h3>
+					<ol>
+						<li><b>set_ignored_layers</b> <i>-min_routing_layer</i> M2 <i>-max_routing_layer</i> M9</li>
+						<li><b>set</b> clock_nets [<b>get_nets</b> <i>-hierarchical -filter</i> "net_type==clock"]</li>
+						<li><b>set_routing_rule</b> $clock_nets <i>-min_routing_layer</i> M4 <i>-max_routing_layer</i> M7</li>
+					</ol>
+				</li>
+				<li>
+					<h3>Metal layer directions</h3>
+					<ol>
+						<li><b>set_attribute</b> <i>-objects</i> [<b>get_layers</b> {M1 M3 M5 M7 M9}] <i>-name</i> routing_direction <i>-value</i> horizontal</li>
+						<li><b>set_attribute</b> <i>-objects</i> [<b>get_layers</b> {M2 M4 M6 M8 AP}] <i>-name</i> routing_direction <i>-value</i> vertical</li>
+					</ol>
+				</li>
+				<li><h3>App options</h3></li>
+				<li class='hide_dot'><textarea style='height:23em'>set_app_options -list {\
+	place.legalize.enable_advanced_legalizer {true} \
+	place.coarse.continue_on_missing_scandef {true} \
+	route.common.connect_floating_shapes {true} \
+	route.global.timing_driven {true} \
+	route.track.timing_driven {true} \
+	route.detail.timing_driven {true} \
+	route.common.rc_driven_setup_effort_level {high} \
+	#SI driven
+	route.global.crosstalk_driven {true} \
+	route.track.crosstalk_driven {true} \
+	time.si_enable_analysis {true} \
+	#OPT
+	route_opt.flow.enable_ccd {true} \
+	route_opt.flow.enable_power {false} \
+	opt.common.user_instance_name_prefix {ROUTE_OPT_} \
+	route.global.force_rerun_after_global_route_opt {true} \
+	time.use_pt_delay {true} \
+}</textarea></li>
+				<li>
+					<b>create_shields</b> <i>-with_grounds</i> VSS <i>-nets</i> $clock_nets <i>-ignore_shielding_net_pins</i> true
+				</li>
+				<li>
+					<h3>Routing</h3>
+					<ol>
+						<li><b>route_global</b> <span>;#-reuse_preexisting_global_route true</span></li>
+						<button onclick="imgtoggle(img17, this)" style='width:15%'>show images</button><br/>
+						<div class='im1' id='img17' hidden='true'>
+							<img src="./img/routeg.png" alt="global route"/>
+							<h3>Global routed design</h3>
+						</div>
+						<li><b>route_track</b></li>
+						<button onclick="imgtoggle(img18, this)" style='width:15%'>show images</button><br/>
+						<div class='im1' id='img18' hidden='true'>
+							<img src="./img/routet.png" alt="track assignment"/>
+							<h3>Track assignment done</h3>
+						</div>
+						<li><b>route_detail</b></li>
+						<button onclick="imgtoggle(img19, this)" style='width:15%'>show images</button><br/>
+						<div class='im1' id='img19' hidden='true'>
+							<img src="./img/routed.png" alt="detail route"/>
+							<h3>Detaile routed design</h3>
+						</div>
+					</ol>
+				</li>
+				<li><b>route_opt</b> <span>;#route optimization</span></li>
+				<li><b>route_auto</b> <span>;#super command for routing</span></li>
+				<div class='checks'>
+					<h3>Pre Checks n Reports</h3>
+					<ul>
+						<li><b>check_routability</b></li>
+						<li><b>check_design</b> <i>-checks</i> {pre_route_stage}</li>
+						<li><b>report_congestion</b> <i>-layers</i> {M1 M2 M3...M9}</li>
+						<li><b>report_utilization</b></li>
+					</ul>
+				</div>
+				<div class='checks'>
+					<h3>Post Checks n Reports</h3>
+					<ul>
+						<li><b>check_routes</b></li>
+						<li><b>check_lvs</b></li>
+						<li><b>check_legality</b></li>
+						<li><b>report_qor</b></li>
+						<li><b>report_net_fanout</b></li>
+						<li><b>report_utilization</b> <i>;#expected increase of 1-2%</i></li>
+					</ul>
+				</div>
+				<li>
+					<h3>Miscellaneous</h3>
+					<ol>
+						<li><b>route_group</b> <i>-nets</i> [collection of critical nets] <span>;#routing specific nets</span></li>
+						<li><b>route_global</b> <i>-effort_level</i> minimum/low/medium/high/ultra(6 rerouting phases) <span>;#routing effort</span></li>
+						<li><b>optimize_routability</b> <span>;# increases spacing b/w cells to solve pin access issues</span></li>
+						<li><b>create_routing_corridor</b> -name My_Corridor -boundary -min_layer -max_layer</li>
+						<li class='hide_dot'><b>create_routing_corridor_shape</b> <i>-routing_corridor</i> My_Corridor <i>-boundary -min_layer -max_layer</i> <span>;# adding shapes to corridor</span></li>
+						<li class='hide_dot'><b>add_to_routing_corridor</b> My_Corridor [<b>get_nets</b>]</li>
+					</ol>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class='container scriptBtn' style="background-color:rgba(130,212,139,0.98)">
+		<button onclick="fillScript('mcmm', scriptwindow)">MCMM</button>
+		<button onclick="fillScript('partial', scriptwindow)">5X5um partial plcmnt blockages</button>
+		<button onclick="fillScript('module', scriptwindow)">Module area</button>
+		<button onclick="fillScript('route', scriptwindow)">Routing blockages on macros</button>
+		<button onclick="fillScript('count', scriptwindow)">Cell count</button>
+		<button onclick="hideit(scriptwindow)">Hide</button>
+		<div id='scriptwindow' hidden=true></div>
+	</div>
+
+	<script>
+		document.addEventListener('contextmenu', event => {event.preventDefault()});
+		function hideit(hiderComp){
+			hiderComp.hidden= true ;
+		}
+		function toggler(clicked,Btn,par) {
+			if(clicked.hidden==false){
+				clicked.hidden = true;
+				Btn.innerHTML = 'open';
+				document.getElementById(par).style.backgroundColor = 'rgba(130,212,139,0.6)';
+			}
+			else{
+				clicked.hidden = false;
+				Btn.innerHTML = 'close';
+				document.getElementById(par).style.backgroundColor = 'rgba(130,212,139,0.98)';
+			}
+		}
+		function imgtoggle(clicked, Btn){
+			if(clicked.hidden==false){
+				clicked.hidden = true;
+				Btn.innerHTML = 'show images';
+			}
+			else{
+				clicked.hidden=false;
+				Btn.innerHTML = 'hide images';
+			}
+		}
+		function fillScript(type, comp){
+			var result ="";
+			var lines = [];
+			if(type=='mcmm'){
+				lines = [
+				"<span># RC parasitic libraries</span>",
+				"<b>read_parasitic_tech</b> <i>-name</i> WORST_PARASITE <i>-tlup</i> cln28hpc+_1p09m+ut-alrdl_6x2z_rcworst.tluplus",
+				"<b>read_parasitic_tech</b> <i>-name</i> BEST_PARASITE <i>-tlup</i> cln28hpc+_1p09m+ut-alrdl_6x2z_rcbest.tluplus",
+				"<br/>",
+				"<span># Slow-Slow corner for setup analysis</span>",
+				"<b>create_corner</b> ss",
+				"<b>set_parasitic_parameters</b> <i>-early_spec</i> WORST_PARASITE <i>-early_temperature</i> 125 <i>-late_spec</i> WORST_PARASITE <i>-late_temperature</i> 125",
+				"<b>set_operating_conditions</b> <i>-max_library</i> tcbn28hpcplusbwp7t30p140svt <i>-max</i> ssg0p81v125c <i>-min_library</i> tcbn28hpcplusbwp7t30p140svt <i>-min</i> ssg0p81v125c",
+				"<br/>",
+				"<b>create_mode</b> func_mode",
+				"<b>create_scenario</b> <i>-name</i> SS <i>-corner</i> ss <i>-mode</i> func_mode",
+				"<b>set_scenario_status</b> SS <i>-all -hold</i> false",
+				"<b>source</b> ../scripts/Func.sdc",
+				"<br/>",
+				"<span># Fast-Fast corner for hold analysis</span>",
+				"<b>create_corner</b> ff",
+				"<b>set_parasitic_parameters</b> <i>-early_spec</i> BEST_PARASITE <i>-early_temperature</i> -40 <i>-late_spec</i> BEST_PARASITE <i>-late_temperature</i> -40",
+				"<b>set_operating_conditions</b> <i>-max_library</i> tcbn28hpcplusbwp7t30p140svt <i>-max</i> ffg0p99vm40c <i>-min_library</i> tcbn28hpcplusbwp7t30p140svt <i>-min</i> ffg0p99vm40c",
+				"<br/>",
+				"<b>create_scenario</b> <i>-name</i> FF <i>-corner</i> ff <i>-mode</i> func_mode",
+				"<b>set_scenario_status</b> FF <i>-all</i> <i>-setup</i> false",
+				"<b>source</b> ../scripts/Func.sdc",
+				"<br/>",
+				"<span># Path grouping</span>",
+				"<b>group_path</b> <i>-name</i> R2R <i>-from</i> [<b>filter_collection [all_registers]</b> \"is_integrated_clock_gating_cell==false\"] <i>-to</i> [<b>filter_collection [all_registers</b>] \"is_integrated_clock_gating_cell==false\"]",
+				"<b>group_path</b> <i>-name</i> R2O <i>-from</i> [<b>filter_collection [all_registers]</b> \"is_integrated_clock_gating_cell==false\"] <i>-to</i> [<b>all_outputs</b>]",
+				"<b>group_path</b> <i>-name</i> I2R <i>-from</i> [<b>remove_from_collection [all_inputs] [get_object_name [all_clocks]]</b>] <i>-to</i> [<b>filter_collection [all_registers] </b>\"is_integrated_clock_gating_cell==false\"]",
+				"<b>group_path</b> <i>-name</i> I2O <i>-from</i> [<b>remove_from_collection [all_inputs] [get_object_name [all_clocks]]</b>] <i>-to</i> [<b>all_outputs</b>]"];
+				comp.hidden = false;
+			}
+			else if(type=='partial'){
+				comp.hidden = false;
+				lines = [
+				"<b>puts</b> \"Entire core area/a specified area? (1/2)\"",
+				"<b>gets</b> <b>stdin</b> option",
+				"<b>if</b> {$option==1} {",
+				"    <b>set</b> llx 1",
+				"    <b>set</b> lly 1",
+				"    <b>set</b> urx [<b>expr</b> [<b>get_attribute</b> [<b>current_block</b>] <i>width</i>] - 1]",
+				"    <b>set</b> ury [<b>expr</b> [<b>get_attribute</b> [<b>current_block</b>] <i>height</i>] - 1]",
+				"}<b>else</b>{",
+				"    <b>puts</b> \"Enter llx: \"",
+				"    <b>gets</b> <b>stdin</b> llx",
+				"    <b>puts</b> \"Enter lly: \"",
+				"    <b>gets</b> <b>stdin</b> lly",
+				"    <b>puts</b> \"Enter urx: \"",
+				"    <b>gets</b> <b>stdin</b> urx",
+				"    <b>puts</b> \"Enter ury: \"",
+				"    <b>gets</b> <b>stdin</b> ury",
+				"}",
+				"<b>puts</b> \"$llx $lly $urx $ury\"",
+				"<b>set</b> side_length 5",
+				"<b>puts</b> \"INFO:side length of blockage squares: 5micron\"",
+				"<b>puts</b> \"Enter blockage percentage(100-blockage=utilization):\"",
+				"<b>gets</b> <b>stdin</b> blockage",
+				"<b>set</b> x $llx",
+				"<b>set</b> y $lly",
+				"<b>while</b> {$y <= [<b>expr</b> $ury - $side_length]} {",
+				"    <b>set</b> x $llx",
+				"    <b>while</b> {$x <= [<b>expr</b> $urx - $side_length]} {",
+				"        <b>create_placement_blockage</b> <i>-type</i> partial <i>-blocked_percentage</i> $blockage <i>-boundary</i> [<b>list</b> [<b>list</b> [<b>set</b> x] [<b>set</b> y]] [<b>list</b> [<b>expr</b> $x+$side_length] [<b>expr</b> $y+$side_length]]]",
+				"        <b>set</b> x [<b>expr</b> $x + $side_length]",
+				"    }",
+				"    <b>set</b> y [<b>expr</b> $y + $side_length]","}"];
+			}
+			else if(type=='module'){
+				comp.hidden = false;
+				lines = [
+				"set area1 0",
+				"foreach cell [<b>get_object_name</b> [<b>get_flat_cells</b> U_int_config_reg/*]] {",
+					"set area1 [expr $area1 + [<b>get_attribute</b> [<b>get_cells</b> $cell] area]]",
+				"}",
+				"puts \"Sum of area of all cells in the given module = $area1\"",
+				];
+			}
+			else if(type=='route'){
+				comp.hidden = false;
+				lines = ["<b> foreach</b> a [<b>get_object_name</b> [<b>get_cells</b> <i>-hierarchical</i> <i>-filter</i> \"is_hard_macro==true\"]] {",
+    					"	<b>create_routing_blockage</b> <i>-boundary</i> [<b>get_attribute</b> $a bbox] <i>-layers</i> {M1 [M4]}","}"];
+			}
+			else if(type=='count'){
+				comp.hidden = false;
+				lines = [
+					"set a 0",
+					"foreach a [<b>get_object_name</b> [<b>get_lib_cells</b>]] {",
+					"set a [lindex [split $a /] 1]",
+					"set count [<b>sizeof_collection</b> [<b>get_flat_cells</b> <i>-filter</i> \"ref_name==$a\"]]",
+					"if { $count != 0 } {",
+					"puts \"$a :$count\"",
+					"}",
+					"}"					
+				];
+			}
+			else{
+				comp.hidden = true;
+			}
+			if(comp.hidden==false){
+				for(var i=0; i<lines.length; i++){
+					result += "<li class='hide_dot'>"+lines[i]+"</li>";
+				}
+				comp.innerHTML = result;
+			}
+		}
+	</script>
+	</body>
+</html>

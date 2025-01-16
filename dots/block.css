@@ -1,0 +1,38 @@
+body{
+	width: 99%;
+	height: 99%;
+}
+button{
+	position: relative;
+	border: solid black 1px;
+	border-radius: 2px;
+}
+.vline{
+	width: 12px;
+	height: 60px;
+}
+.box{
+	width: 60px;
+	height: 60px;
+}
+.hline{
+	width: 72px;
+	height: 12px;
+}
+.hline1{
+	margin-left: 6px;
+}
+#count{
+	background-color: rgba(44,102,240,0.8);
+	color: white;
+	border: solid steelblue 1px;
+	font-size: 24px;
+	min-width: 150px;
+	border-radius: 6px;
+	top: -70px;
+	margin-left: 300px;
+}
+#result{
+	width: 40%;
+	margin: auto;
+}

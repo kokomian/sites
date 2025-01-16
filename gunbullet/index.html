@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hello</title>
+		<link type='text/css' rel='stylesheet' href='./block.css'/>
+		<script type='text/javascript' language='javascript' src='./master.js'></script>
+	</head>
+	<body>
+		<div id='init'>
+			<div>
+				<h2>Hello</h2>
+			</div>
+			<div id='userin'>
+				<label>No.of users: </label><input type='number' required='required' id='num'/><br/>
+				<label>Enter names seperated by space: </label><input type='text' required='required' id='names'/><br/>
+				<button type='submit' onClick="if (document.getElementById('num').value!='') {var n = document.getElementById('num').value; var names = document.getElementById('names').value; InitializeGrid(n, names);}">Start</button>
+			</div>
+		</div>
+		<div id='board'></div>
+		<div id='roll'></div>
+		<div id='finaldiv'>
+		</div>
+		<footer>
+			<p>Instructions</p>
+			<ul>
+				<li>1.Head  2.Body  3.Gun</li>
+				<li>Kill a player by clicking their troop when you get a bullet</li>
+				<li>Observe JS button to check if the next click is Kill or not</li>
+				<li><i>Do not Refresh, doing so will reset the game</i></li>
+			</ul>
+		</footer>
+		<script>
+			window.onbeforeunload = function (e) {
+				return "Want to reset the game?";
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,82 @@
+h2{
+  display: block;
+  width: 10%;
+  color: darkgreen;
+  padding-left: 45%;
+}
+button{
+  width: 7%;
+  height: 3.5em;
+  max-height: 3.5em;
+  margin-bottom: 0.5em;
+  border-radius: 6px;
+  border: solid steelblue 1px;
+}
+img{
+  height: 2em;
+}
+.name, .number{
+  background-color: rgba(130,212,139,0.9);
+}
+.element{
+  background-color: #87ceeba1;  
+}
+.empty{
+  background-color: rgba(44,102,240,0.8);
+  color: white;
+}
+.dead{
+  background-color: rgba(245,0,0,0.6);
+  color: white;
+  border: none;
+}
+#userin{
+  width: 70%;
+  margin: auto;
+  background-color: rgba(130,212,139,0.9);
+  padding: 2em;
+  border-radius: 6px;
+}
+label{
+  display: inline-block;
+  width: 35%;
+  margin: 0.7em;
+}
+input{
+/*   display:inline; */
+  border: solid steelblue 1px;
+  height: 2em;
+  border-radius: 5px;
+  width: 55%;  
+}
+#userin button{
+  width: 10%;
+  max-height: 2em;
+  margin-top: 1em;
+  margin-left: 45%;
+  font-size: 1.2em;
+}
+footer{
+  width: 70%;
+  margin: auto;
+  margin-top: 5%;
+  padding: 2em;
+  border-radius: 6px;
+  background-color: rgba(130,212,139,0.9);
+}
+footer p{
+  color: darkmagenta;
+  margin-left: 1em;
+  font-size: 18px;
+}
+footer li{
+  margin-bottom: 0.3em;
+}
+#final{
+  width: 40%;
+  margin: auto;
+  background-color: rgba(130,222,139,0.9);
+  border-radius: 6px;
+  padding: 2em 2em 2em 4em;
+  line-height: 1.5em; 
+}
